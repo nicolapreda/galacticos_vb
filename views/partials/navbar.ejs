@@ -1,0 +1,111 @@
+<!-- NAVIGATION BAR container -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white text-galacticos-dark border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex flex-col items-center">
+
+            <!-- Top Row: Logo & Socials (Socials aligned right, Logo centered relative to container) -->
+            <div class="w-full flex justify-between items-center mb-4 relative">
+                <!-- Mobile Menu Button (Hamburger) - Left aligned -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-open-btn" class="text-galacticos-dark focus:outline-none p-2">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Logo (Absolute Center) -->
+                <div class="absolute left-1/2 transform -translate-x-1/2">
+                    <a href="/" class="group">
+                        <img src="/assets/logo.png" alt="Galacticos Vele Blu Logo"
+                            class="w-20 h-20 object-contain group-hover:scale-110 transition-transform">
+                    </a>
+                </div>
+
+                <!-- Social Icons (Right) -->
+                <div class="hidden md:flex space-x-3">
+                    <a href="#" class="text-galacticos-dark hover:text-galacticos-blue transition-colors"><i
+                            class="fab fa-instagram text-xl"></i> IG</a>
+                    <a href="#" class="text-galacticos-dark hover:text-galacticos-blue transition-colors"><i
+                            class="fab fa-facebook text-xl"></i> FB</a>
+                </div>
+                <!-- Filler for mobile right alignment if needed -->
+                <div class="md:hidden w-8"></div>
+            </div>
+
+            <!-- Bottom Row: Navigation Links (Centered) -->
+            <div class="hidden md:flex space-x-8 items-center justify-center w-full border-t border-gray-100 pt-3">
+                <a href="/news"
+                    class="font-anton text-lg uppercase tracking-wider hover:text-galacticos-blue transition-colors">NEWS</a>
+                <a href="/roster"
+                    class="font-anton text-lg uppercase tracking-wider hover:text-galacticos-blue transition-colors">SQUADRA</a>
+                <a href="#"
+                    class="font-anton text-lg uppercase tracking-wider hover:text-galacticos-blue transition-colors">JUNIORES</a>
+                <a href="/"
+                    class="font-anton text-lg uppercase tracking-wider hover:text-galacticos-blue transition-colors text-galacticos-blue">HOME</a>
+                <a href="#"
+                    class="font-anton text-lg uppercase tracking-wider hover:text-galacticos-blue transition-colors">PARTNERS</a>
+                <a href="/shop"
+                    class="font-anton text-lg uppercase tracking-wider text-red-600 hover:text-red-700 transition-colors">SHOP</a>
+                <a href="/admin/dashboard.html"
+                    class="font-anton text-lg uppercase tracking-wider text-red-600 hover:text-red-700 transition-colors">BIGLIETTERIA</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- FULL SCREEN MOBILE OVERLAY -->
+<div id="mobile-menu-overlay"
+    class="fixed inset-0 bg-galacticos-dark z-[9999] opacity-0 pointer-events-none transition-opacity duration-300 flex flex-col items-center justify-center">
+    <!-- Close Button (Top Right) -->
+    <button id="mobile-menu-close-btn"
+        class="absolute top-6 right-6 text-white focus:outline-none hover:text-galacticos-accent transition-colors">
+        <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+    </button>
+
+    <!-- Menu Links -->
+    <div class="flex flex-col items-center gap-8">
+        <a href="/"
+            class="mobile-link text-3xl font-anton uppercase tracking-widest hover:text-galacticos-accent transition-colors">Home</a>
+        <a href="/roster"
+            class="mobile-link text-3xl font-anton uppercase tracking-widest hover:text-galacticos-accent transition-colors">Squadra</a>
+        <a href="/news"
+            class="mobile-link text-3xl font-anton uppercase tracking-widest hover:text-galacticos-accent transition-colors">News</a>
+        <a href="/shop"
+            class="mobile-link text-3xl font-anton uppercase tracking-widest hover:text-galacticos-accent transition-colors">Shop</a>
+        <a href="/admin/dashboard.html"
+            class="mobile-link text-xl text-gray-400 font-anton uppercase tracking-widest hover:text-white transition-colors">Area
+            Admin</a>
+    </div>
+
+    <!-- Bottom Logo -->
+    <div class="mt-12 opacity-50">
+        <img src="/assets/logo.png" alt="Galacticos Vele Blu Logo" class="w-24 h-24 object-contain">
+    </div>
+</div>
+
+<script>
+    const openBtn = document.getElementById('mobile-menu-open-btn');
+    const closeBtn = document.getElementById('mobile-menu-close-btn');
+    const overlay = document.getElementById('mobile-menu-overlay');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    function toggleMenu(show) {
+        if (show) {
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            overlay.classList.add('opacity-100', 'pointer-events-auto');
+            document.body.style.overflow = 'hidden';
+        } else {
+            overlay.classList.remove('opacity-100', 'pointer-events-auto');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = '';
+        }
+    }
+
+    if (openBtn) openBtn.addEventListener('click', () => toggleMenu(true));
+    if (closeBtn) closeBtn.addEventListener('click', () => toggleMenu(false));
+    mobileLinks.forEach(link => link.addEventListener('click', () => toggleMenu(false)));
+</script>

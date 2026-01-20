@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galacticos Vele Blu | Official Website</title>
+    <meta name="description" content="Sito ufficiale dei Galacticos Vele Blu. News, partite, shop e community." />
+    <!-- Tailwind CSS Output -->
+    <link rel="stylesheet" href="/assets/style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;700;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #001E45;
+            /* galacticos-dark */
+        }
+
+        h1,
+        h2,
+        h3,
+        .font-display {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* Grunge texture overlay */
+        .grunge-overlay {
+            background-image: url('https://www.transparenttextures.com/patterns/concrete-wall.png');
+            opacity: 0.1;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body class="text-white overflow-x-hidden">
+    <!-- Navigation -->
+    <%- include('partials/navbar') %>
+
+        <!-- PADDING FOR FIXED NAVBAR (Approx 160px for stacked layout) -->
+        <div class="h-[180px]"></div>
+
+        <!-- MATCH BANNER (Now Top Priority) -->
+        <section class="relative z-20 max-w-7xl mx-auto px-4 -mb-10">
+            <div
+                class="bg-galacticos-dark text-white rounded-none md:rounded-lg shadow-2xl overflow-hidden grunge-overlay border-2 border-white/10">
+                <!-- Banner Content Image Background? or Just Styled -->
+                <div class="relative py-8 px-6 flex flex-col md:flex-row items-center justify-between gap-6"
+                    style="background-image: url('/assets/pattern-dots.svg');">
+
+                    <!-- Timer / Countdown -->
+                    <div class="text-center md:text-left">
+                        <h3 class="font-anton text-galacticos-accent text-lg tracking-widest mb-1">PROSSIMA PARTITA</h3>
+                        <div class="flex gap-4 text-center">
+                            <div>
+                                <span class="block text-3xl font-black font-anton">04</span>
+                                <span class="text-xs uppercase text-gray-400">Giorni</span>
+                            </div>
+                            <div>
+                                <span class="block text-3xl font-black font-anton">:</span>
+                            </div>
+                            <div>
+                                <span class="block text-3xl font-black font-anton">12</span>
+                                <span class="text-xs uppercase text-gray-400">Ore</span>
+                            </div>
+                            <div>
+                                <span class="block text-3xl font-black font-anton">:</span>
+                            </div>
+                            <div>
+                                <span class="block text-3xl font-black font-anton">30</span>
+                                <span class="text-xs uppercase text-gray-400">Min</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Match Info -->
+                    <div class="text-center flex-1">
+                        <div class="flex items-center justify-center gap-6">
+                            <span class="text-2xl md:text-4xl font-anton">GVB</span>
+                            <span class="bg-white text-galacticos-dark px-2 py-1 font-bold text-xs rounded">VS</span>
+                            <span class="text-2xl md:text-4xl font-anton text-gray-400">REAL BRIOLO</span>
+                        </div>
+                        <p class="text-xs uppercase tracking-widest mt-2 text-galacticos-accent">Caravella Arena - 07
+                            Feb 21:00</p>
+                    </div>
+
+                    <!-- CTA -->
+                    <div>
+                        <a href="#" class="btn-accent text-xs py-2 px-4 shadow-lg shadow-yellow-500/20">PREVIEW
+                            MATCH</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HERO SECTION -->
+        <section class="relative h-[80vh] w-full flex items-center justify-center overflow-hidden pt-10">
+            <!-- Background Image -->
+            <div class="absolute inset-0 z-0">
+                <img src="/assets/hero-bg.png" alt="Galacticos Team" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/40"></div>
+            </div>
+
+            <!-- Content -->
+            <div class="relative z-10 text-center px-6 max-w-7xl mx-auto mt-20">
+                <!-- Optional Subtitle or decorative text -->
+            </div>
+        </section>
+
+        <!-- LATEST NEWS -->
+        <section class="py-24 relative">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="flex justify-between items-end mb-12 border-b border-white/20 pb-4">
+                    <h2 class="text-5xl md:text-7xl font-black text-white">LATEST <span
+                            class="text-galacticos-accent">NEWS</span></h2>
+                    <a href="/news"
+                        class="hidden md:block text-white font-bold hover:text-galacticos-accent transition-colors uppercase tracking-widest">Tutte
+                        le news &rarr;</a>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <% if(typeof news !=='undefined' && news.length> 0) { %>
+                        <% news.forEach(function(item) { %>
+                            <article class="group cursor-pointer">
+                                <div
+                                    class="relative aspect-[4/3] overflow-hidden bg-gray-800 mb-4 border-2 border-transparent group-hover:border-galacticos-accent transition-all">
+                                    <img src="<%= item.image || '/assets/news-placeholder.jpg' %>"
+                                        alt="<%= item.title %>"
+                                        class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
+                                    <div
+                                        class="absolute top-0 right-0 bg-galacticos-accent text-galacticos-dark font-bold text-xs px-3 py-1 uppercase">
+                                        News
+                                    </div>
+                                </div>
+                                <div class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">
+                                    <%= new Date(item.date).toLocaleDateString() %>
+                                </div>
+                                <h3
+                                    class="text-2xl font-bold leading-tight group-hover:text-galacticos-accent transition-colors">
+                                    <a href="/news/<%= item.id %>">
+                                        <%= item.title %>
+                                    </a>
+                                </h3>
+                            </article>
+                            <% }); %>
+                                <% } else { %>
+                                    <!-- Fallback placeholder content -->
+                                    <article class="group cursor-pointer">
+                                        <div
+                                            class="relative aspect-[4/3] overflow-hidden bg-gray-800 mb-4 border-2 border-transparent group-hover:border-galacticos-accent transition-all">
+                                            <img src="/assets/news-placeholder.jpg" alt="News Placeholder"
+                                                class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
+                                        </div>
+                                        <div class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">Oggi
+                                        </div>
+                                        <h3
+                                            class="text-2xl font-bold leading-tight group-hover:text-galacticos-accent transition-colors">
+                                            Benvenuti nel nuovo sito ufficiale
+                                        </h3>
+                                    </article>
+                                    <% } %>
+                </div>
+
+                <div class="mt-8 text-center md:hidden">
+                    <a href="/news" class="btn-primary w-full block text-center">Tutte le news</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SHOP TEASER -->
+        <section class="py-24 bg-white text-galacticos-dark relative overflow-hidden">
+            <!-- Diagonal split background -->
+            <div
+                class="absolute top-0 right-0 w-2/3 h-full bg-galacticos-gray transform skew-x-12 translate-x-32 z-0 hidden lg:block">
+            </div>
+
+            <div class="max-w-7xl mx-auto px-6 relative z-10">
+                <div class="flex flex-col lg:flex-row items-center gap-16">
+                    <!-- Text Content -->
+                    <div class="w-full lg:w-1/2">
+                        <h2 class="text-5xl md:text-8xl font-black mb-6 leading-none">
+                            WEAR THE<br><span class="text-galacticos-blue outline-text">COLORS.</span>
+                        </h2>
+                        <p class="text-xl font-medium text-gray-600 mb-8 max-w-md">
+                            Scopri la nuova collezione ufficiale 2026. Maglie gara, training kit e merchandising
+                            ufficiale dei Galacticos.
+                        </p>
+                        <a href="/shop" class="btn-primary inline-flex items-center gap-2">
+                            Acquista Ora
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </a>
+                    </div>
+
+                    <!-- Image/Product Display -->
+                    <div class="w-full lg:w-1/2 relative">
+                        <div class="relative z-10 transform hover:scale-105 transition duration-500">
+                            <img src="/assets/shop-teaser.png" alt="Shop Teaser" class="w-full drop-shadow-2xl">
+                        </div>
+                        <!-- Decorative elements -->
+                        <div
+                            class="absolute -top-10 -right-10 w-40 h-40 bg-galacticos-accent rounded-full blur-3xl opacity-50 z-0">
+                        </div>
+                        <div
+                            class="absolute -bottom-10 -left-10 w-60 h-60 bg-galacticos-blue rounded-full blur-3xl opacity-20 z-0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMMUNITY / SOCIAL -->
+        <section class="py-20 bg-galacticos-blue relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10" style="background-image: url('/assets/pattern-dots.svg');"></div>
+            <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+                <h2 class="text-4xl md:text-6xl font-black text-white mb-6 uppercase">Entra nella community</h2>
+                <p class="text-white/80 text-xl mb-10">
+                    Seguici sui social e unisciti ai cori della Caravella Arena. #VamosGalacticos
+                </p>
+                <div class="flex justify-center gap-4">
+                    <a href="#"
+                        class="bg-white text-galacticos-blue w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold hover:scale-110 transition shadow-lg">IG</a>
+                    <a href="#"
+                        class="bg-white text-galacticos-blue w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold hover:scale-110 transition shadow-lg">FB</a>
+                    <a href="#"
+                        class="bg-white text-galacticos-blue w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold hover:scale-110 transition shadow-lg">YT</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <%- include('partials/footer') %>
+
+</body>
+
+</html>

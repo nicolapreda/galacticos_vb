@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /
+
+# Galacticos Vele Blu - Official Website
+
+# Main Pages
+Allow: /index.html
+Allow: /assets/
+Allow: /news
+Allow: /shop
+Allow: /roster
+
+# Admin
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://www.galacticosveleblu.it/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1
+
+# Host
+Host: https://www.galacticosveleblu.it

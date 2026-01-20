@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notizie | Sun-Fai Cooperativa - Aggiornamenti e Novità</title>
+    <meta name="description"
+        content="Resta aggiornato sulle ultime novità di Sun-Fai: premi, nuovi soci, eventi e progressi delle nostre Comunità Energetiche Rinnovabili." />
+    <link rel="icon" href="/assets/logo-min.png" type="image/png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sunfai-yellow': '#FFD600',
+                        'sunfai-black': '#000000',
+                        'sunfai-white': '#FFFFFF',
+                    },
+                    fontFamily: {
+                        'sans': ['"Glacial Indifference"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @font-face {
+            font-family: 'Glacial Indifference';
+            src: url('./assets/GlacialIndifference-Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Glacial Indifference';
+            src: url('./assets/GlacialIndifference-Bold.otf') format('opentype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Glacial Indifference';
+            src: url('./assets/GlacialIndifference-Italic.otf') format('opentype');
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-family: 'Glacial Indifference', sans-serif;
+        }
+
+        .yellow-brush-bg {
+            position: relative;
+            display: inline-block;
+            padding: 0 10px;
+        }
+
+        .yellow-brush-bg::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            right: -10px;
+            top: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='400' height='80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5,40 Q50,10 100,35 T200,40 T300,35 T395,40' stroke='%23FFD600' stroke-width='70' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            z-index: -1;
+            transform: rotate(-1deg);
+        }
+    </style>
+</head>
+
+<body class="bg-white flex flex-col min-h-screen">
+
+    <!-- NAVIGATION -->
+    <!-- NAVIGATION -->
+    <%- include('partials/navbar') %>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-grow pt-40 pb-20">
+            <div class="max-w-4xl mx-auto px-6">
+                <h1 class="text-5xl md:text-6xl font-black mb-16 relative inline-block">
+                    Notizie
+                    <span class="absolute bottom-3 left-0 w-full h-6 bg-sunfai-yellow -z-10 transform -rotate-1"></span>
+                </h1>
+
+                <div id="news-container" class="space-y-16">
+                    <!-- News will be loaded here -->
+                    <div class="text-center py-12">
+                        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                        <p class="mt-2 text-gray-600">Caricamento notizie...</p>
+                    </div>
+                </div>
+
+                <script>
+                    async function loadNews() {
+                        try {
+                            const response = await fetch('/api/news');
+                            const news = await response.json();
+                            const container = document.getElementById('news-container');
+
+                            if (news.length === 0) {
+                                container.innerHTML = '<p class="text-center text-gray-600">Nessuna notizia disponibile al momento.</p>';
+                                return;
+                            }
+
+                            container.innerHTML = news.map(item => `
+                            <article>
+                                ${item.image ? `<img src="${item.image}" alt="${item.title}" class="w-full h-64 object-cover rounded-xl mb-6">` : ''}
+                                <h2 class="text-3xl font-black mb-4 leading-tight">${item.title}</h2>
+                                <p class="text-sm text-gray-500 mb-2">${new Date(item.date).toLocaleDateString('it-IT')}</p>
+                                <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                                    ${item.content.replace(/\n/g, '<br>')}
+                                </p>
+                            </article>
+                            <hr class="border-gray-200">
+                        `).join('');
+                        } catch (error) {
+                            console.error('Error loading news:', error);
+                            document.getElementById('news-container').innerHTML = '<p class="text-center text-red-500">Errore nel caricamento delle notizie.</p>';
+                        }
+                    }
+
+                    document.addEventListener('DOMContentLoaded', loadNews);
+                </script>
+
+                <div class="text-center mt-20">
+                    <a href="/" class="text-sm font-bold underline hover:text-sunfai-yellow transition">Torna
+                        alla
+                        home</a>
+                </div>
+            </div>
+        </main>
+
+        <%- include('partials/footer') %>
+
+
+
+</body>
+
+</html>

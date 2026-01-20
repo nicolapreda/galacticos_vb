@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galacticos Admin - Dashboard</title>
+    <!-- Tailwind via CDN for simplicity in admin -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'galacticos-blue': '#0047AB',
+                        'galacticos-dark': '#001E45',
+                        'galacticos-accent': '#FFD700',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-100 text-gray-800 font-sans min-h-screen flex flex-col">
+    <!-- Header -->
+    <div class="bg-galacticos-dark px-6 py-4 shadow-md flex justify-between items-center sticky top-0 z-50 text-white">
+        <div class="flex items-center gap-3">
+            <div
+                class="w-10 h-10 rounded-full bg-galacticos-blue border-2 border-galacticos-accent flex items-center justify-center font-bold">
+                GVB</div>
+            <h1 class="text-xl font-bold tracking-wide">Admin Dashboard</h1>
+        </div>
+        <button
+            class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300 text-sm uppercase"
+            onclick="logout()">
+            Logout
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 max-w-7xl">
+
+        <!-- News Section -->
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+            <h2
+                class="text-2xl font-black mb-6 text-galacticos-dark border-b border-gray-100 pb-4 flex justify-between items-center">
+                Notizie
+                <span class="text-xs bg-gray-100 text-gray-500 py-1 px-2 rounded">Gestione</span>
+            </h2>
+
+            <form id="newsForm" class="space-y-4 mb-8">
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold uppercase text-gray-400">Titolo</label>
+                    <input type="text" name="title" required
+                        class="w-full px-3 py-2 rounded border border-gray-300 focus:border-galacticos-blue focus:outline-none transition">
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold uppercase text-gray-400">Contenuto</label>
+                    <textarea name="content" rows="3" required
+                        class="w-full px-3 py-2 rounded border border-gray-300 focus:border-galacticos-blue focus:outline-none transition resize-none"></textarea>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold uppercase text-gray-400">Data</label>
+                    <input type="date" name="date" required
+                        class="w-full px-3 py-2 rounded border border-gray-300 focus:border-galacticos-blue focus:outline-none transition">
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold uppercase text-gray-400">Cover Image</label>
+                    <input type="file" name="image" accept="image/*"
+                        class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-galacticos-blue file:text-white hover:file:bg-blue-700 cursor-pointer">
+                </div>
+                <button type="submit"
+                    class="w-full bg-galacticos-dark text-white font-bold py-3 rounded hover:bg-galacticos-blue transition duration-300 uppercase text-xs tracking-widest shadow-lg">
+                    Pubblica Notizia
+                </button>
+            </form>
+
+            <div class="space-y-2 max-h-[400px] overflow-y-auto pr-2" id="newsList">
+                <!-- News items -->
+            </div>
+        </div>
+
+        <!-- Products Section (NEW) -->
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+            <h2
+                class="text-2xl font-black mb-6 text-galacticos-dark border-b border-gray-100 pb-4 flex justify-between items-center">
+                Shop Prodotti
+                <span class="text-xs bg-gray-100 text-gray-500 py-1 px-2 rounded">New</span>
+            </h2>
+
+            <form id="productsForm" class="space-y-4 mb-8">
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold uppercase text-gray-400">Nome Prodotto</label>
+                    <input type="text" name="name" required
+                        class="w-full px-3 py-2 rounded border border-gray-300 focus:border-galacticos-blue focus:outline-none transition">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold uppercase text-gray-400">Prezzo (€)</label>
+                        <input type="number" step="0.01" name="price" required
+                            class="w-full px-3 py-2 rounded border border-gray-300 focus:border-galacticos-blue focus:outline-none transition">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold uppercase text-gray-400">Stock</label>
+                        <input type="number" name="stock" required
+                            class="w-full px-3 py-2 rounded border border-gray-300 focus:border-galacticos-blue focus:outline-none transition">
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold uppercase text-gray-400">Descrizione</label>
+                    <textarea name="description" rows="2" required
+                        class="w-full px-3 py-2 rounded border border-gray-300 focus:border-galacticos-blue focus:outline-none transition resize-none"></textarea>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold uppercase text-gray-400">Immagine Prodotto</label>
+                    <input type="file" name="image" accept="image/*"
+                        class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-galacticos-blue file:text-white hover:file:bg-blue-700 cursor-pointer">
+                </div>
+                <button type="submit"
+                    class="w-full bg-galacticos-dark text-white font-bold py-3 rounded hover:bg-galacticos-blue transition duration-300 uppercase text-xs tracking-widest shadow-lg">
+                    Aggiungi Prodotto
+                </button>
+            </form>
+
+            <div class="space-y-2 max-h-[400px] overflow-y-auto pr-2" id="productsList">
+                <!-- Products items -->
+            </div>
+        </div>
+
+        <!-- Events Section -->
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 lg:col-span-2 xl:col-span-1">
+            <h2
+                class="text-2xl font-black mb-6 text-galacticos-dark border-b border-gray-100 pb-4 flex justify-between items-center">
+                Eventi / Partite
+                <span class="text-xs bg-gray-100 text-gray-500 py-1 px-2 rounded">Match Center</span>
+            </h2>
+
+            <form id="eventsForm" class="space-y-4 mb-8">
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold uppercase text-gray-400">Titolo Evento (es. vs
+                        Squadra)</label>
+                    <input type="text" name="title" required
+                        class="w-full px-3 py-2 rounded border border-gray-300 focus:border-galacticos-blue focus:outline-none transition">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold uppercase text-gray-400">Data</label>
+                        <input type="date" name="date" required
+                            class="w-full px-3 py-2 rounded border border-gray-300 focus:border-galacticos-blue focus:outline-none transition">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold uppercase text-gray-400">Luogo</label>
+                        <input type="text" name="location" required
+                            class="w-full px-3 py-2 rounded border border-gray-300 focus:border-galacticos-blue focus:outline-none transition">
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold uppercase text-gray-400">Dettagli</label>
+                    <textarea name="description" rows="2" required
+                        class="w-full px-3 py-2 rounded border border-gray-300 focus:border-galacticos-blue focus:outline-none transition resize-none"></textarea>
+                </div>
+                <button type="submit"
+                    class="w-full bg-galacticos-dark text-white font-bold py-3 rounded hover:bg-galacticos-blue transition duration-300 uppercase text-xs tracking-widest shadow-lg">
+                    Aggiungi Evento
+                </button>
+            </form>
+
+            <div class="space-y-2 max-h-[400px] overflow-y-auto pr-2" id="eventsList">
+                <!-- Events items -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check Auth
+        async function checkAuth() {
+            const res = await fetch('/api/check-auth');
+            const data = await res.json();
+            if (!data.authenticated) {
+                window.location.href = '/admin/login.html';
+            }
+        }
+        checkAuth();
+
+        // Logout
+        async function logout() {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/admin/login.html';
+        }
+
+        // --- NEWS LOGIC ---
+        let editingNewsId = null;
+
+        async function loadNews() {
+            try {
+                const res = await fetch('/api/news');
+                const news = await res.json();
+                const list = document.getElementById('newsList');
+                list.innerHTML = news.map(item => `
+                    <div class="flex justify-between items-start bg-gray-50 p-3 rounded hover:bg-gray-100 transition border border-gray-100">
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800 line-clamp-1">${item.title}</h4>
+                            <p class="text-xs text-gray-500">${item.date ? item.date.split('T')[0] : ''}</p>
+                        </div>
+                        <div class="flex gap-1 ml-2">
+                             <button onclick='editNews(${JSON.stringify(item).replace(/'/g, "&#39;")})' class="text-blue-600 hover:text-blue-800 p-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                             </button>
+                             <button onclick="deleteNews(${item.id})" class="text-red-600 hover:text-red-800 p-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                             </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        async function saveNews(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            let url = '/api/news';
+            let method = 'POST';
+
+            if (editingNewsId) {
+                url = `/api/news/${editingNewsId}`;
+                method = 'PUT';
+            }
+
+            const res = await fetch(url, { method, body: formData });
+            if (res.ok) {
+                e.target.reset();
+                editingNewsId = null;
+                e.target.querySelector('button').innerText = 'PUBBLICA NOTIZIA';
+                loadNews();
+            } else {
+                alert('Errore nel salvataggio');
+            }
+        }
+
+        function editNews(item) {
+            editingNewsId = item.id;
+            const form = document.getElementById('newsForm');
+            form.title.value = item.title;
+            form.content.value = item.content;
+            form.date.value = item.date.split('T')[0];
+            form.querySelector('button').innerText = 'AGGIORNA NOTIZIA';
+        }
+
+        async function deleteNews(id) {
+            if (confirm('Eliminare questa notizia?')) {
+                await fetch(`/api/news/${id}`, { method: 'DELETE' });
+                loadNews();
+            }
+        }
+
+        document.getElementById('newsForm').addEventListener('submit', saveNews);
+
+
+        // --- PRODUCTS LOGIC ---
+        let editingProductId = null;
+
+        async function loadProducts() {
+            try {
+                const res = await fetch('/api/products');
+                const products = await res.json();
+                const list = document.getElementById('productsList');
+                list.innerHTML = products.map(item => `
+                    <div class="flex justify-between items-start bg-gray-50 p-3 rounded hover:bg-gray-100 transition border border-gray-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gray-200 rounded overflow-hidden">
+                                <img src="${item.image || '/assets/shop-teaser.png'}" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-800 line-clamp-1">${item.name}</h4>
+                                <p class="text-xs text-gray-500">€${item.price} - Stock: ${item.stock}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-1 ml-2">
+                             <button onclick="deleteProduct(${item.id})" class="text-red-600 hover:text-red-800 p-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                             </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        async function saveProduct(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            // Products API supports only POST and DELETE in our simple implementation
+            // But we might want editing later. For now just POST.
+
+            const res = await fetch('/api/products', { method: 'POST', body: formData });
+            if (res.ok) {
+                e.target.reset();
+                loadProducts();
+            } else {
+                alert('Errore nel salvataggio');
+            }
+        }
+
+        async function deleteProduct(id) {
+            if (confirm('Eliminare questo prodotto?')) {
+                await fetch(`/api/products/${id}`, { method: 'DELETE' });
+                loadProducts();
+            }
+        }
+
+        document.getElementById('productsForm').addEventListener('submit', saveProduct);
+
+        // --- EVENTS LOGIC ---
+        let editingEventId = null;
+
+        async function loadEvents() {
+            try {
+                const res = await fetch('/api/events');
+                const events = await res.json();
+                const list = document.getElementById('eventsList');
+                list.innerHTML = events.map(item => `
+                    <div class="flex justify-between items-start bg-gray-50 p-3 rounded hover:bg-gray-100 transition border border-gray-100">
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800 line-clamp-1">${item.title}</h4>
+                            <p class="text-xs text-gray-500">${item.date ? item.date.split('T')[0] : ''}</p>
+                        </div>
+                        <div class="flex gap-1 ml-2">
+                             <button onclick="deleteEvent(${item.id})" class="text-red-600 hover:text-red-800 p-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                             </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        async function saveEvent(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            // Events API also just create/delete for now in this simple admin
+            const res = await fetch('/api/events', { method: 'POST', body: formData });
+            if (res.ok) {
+                e.target.reset();
+                loadEvents();
+            } else {
+                alert('Errore nel salvataggio');
+            }
+        }
+
+        async function deleteEvent(id) {
+            if (confirm('Eliminare questo evento?')) {
+                await fetch(`/api/events/${id}`, { method: 'DELETE' });
+                loadEvents();
+            }
+        }
+
+        document.getElementById('eventsForm').addEventListener('submit', saveEvent);
+
+        // Init
+        loadNews();
+        loadProducts();
+        loadEvents();
+
+    </script>
+</body>
+
+</html>

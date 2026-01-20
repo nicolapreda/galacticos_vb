@@ -294,8 +294,8 @@ app.delete('/api/events/:id', requireAuth, (req, res) => {
 // We can just serve the static files from public/admin/
 
 // Avvio del server
-const PORT = process.env.PORT || 3011;
+const PORT = process.env.PORT || 3002;
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Sun-Fai Website attivo su http://0.0.0.0:${PORT}`);
-  console.log(`📸 Sito web di Sun-Fai Cooperativa`);
+  console.log(`🚀 Galacticos Website attivo su http://0.0.0.0:${PORT}`);
+  console.log(`📸 Sito web dei Galacticos Vele Blu`);
 });

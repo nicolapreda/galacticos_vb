@@ -20,8 +20,18 @@ export default {
       return new Response('Method not allowed', { status: 405 });
     }
 
-    // The CSI URL to scrape
-    const targetUrl = 'https://live.centrosportivoitaliano.it/25/Calcio-a-7/Lombardia/Bergamo/C105/?j=NEU9REZIJjRGPVBOSyY0Rz1FREkmNEg9RCY0ST1RICY0TD1ERkgmNDI9ZQ==';
+    // Get target URL from query parameter or use default
+    const url = new URL(request.url);
+    const targetUrl = url.searchParams.get('url') || 
+      'https://live.centrosportivoitaliano.it/25/Calcio-a-7/Lombardia/Bergamo/C105/?j=NEU9REZIJjRGPVBOSyY0Rz1FREkmNEg9RCY0ST1RICY0TD1ERkgmNDI9ZQ==';
+
+    // Validate that URL is from CSI domain
+    if (!targetUrl.includes('centrosportivoitaliano.it')) {
+      return new Response('Invalid URL - only CSI URLs allowed', { 
+        status: 400,
+        headers: corsHeaders 
+      });
+    }
 
     try {
       // Fetch from CSI with browser-like headers
@@ -38,19 +48,27 @@ export default {
           'Sec-Fetch-Mode': 'navigate',
           'Sec-Fetch-Site': 'none',
           'Sec-Fetch-User': '?1',
-          'Cache-Control': 'max-age=0'
+          'Cache-Control': 'max-age=0',
+          'Referer': 'https://live.centrosportivoitaliano.it/'
         }
       });
 
-      // Get the HTML content
-      const html = await response.text();
+      if (!response.ok) {
+        return new Response(`Failed to fetch: ${response.status}`, {
+          status: response.status,
+          headers: corsHeaders
+        });
+      }
 
-      // Return with CORS headers
-      return new Response(html, {
+      // Get content type to determine if it's HTML or binary (image)
+      const contentType = response.headers.get('content-type') || 'text/html';
+      
+      // Return the content with CORS headers
+      return new Response(response.body, {
         status: response.status,
         headers: {
           ...corsHeaders,
-          'Content-Type': 'text/html; charset=utf-8',
+          'Content-Type': contentType,
           'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
         }
       });

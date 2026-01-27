@@ -114,17 +114,19 @@ async function scrapeLeagueDataInternal(): Promise<LeagueData> {
             let team = $(tds[1]).find("span").last().text().trim();
             if (!team) team = $(tds[1]).text().trim();
 
-            // Extract Logo
+            // Extract Logo - proxy through our API to avoid 403
             let logo = "";
             const img = $(tds[1]).find("img");
             if (img.length > 0) {
                 const src = img.attr("src");
                 if (src) {
-                    logo = src.startsWith("http") ? src : `https://live.centrosportivoitaliano.it${src}`;
+                    const fullUrl = src.startsWith("http") ? src : `https://live.centrosportivoitaliano.it${src}`;
+                    // Proxy CSI images through our API
+                    logo = `/api/csi-proxy?url=${encodeURIComponent(fullUrl)}`;
                 }
             }
 
-            // Rename team
+            // Rename team and use local logo
             if (team === TEAM_NAME_CSI) {
                 team = TEAM_NAME_DISPLAY;
                 logo = "/assets/logo.webp";
@@ -324,12 +326,25 @@ export interface MatchDetails {
 
 export async function getMatchDetails(url: string): Promise<MatchDetails | null> {
     console.log("Scraping match details from:", url);
-    const headers = {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    };
 
     try {
-        const res = await fetch(url, { headers, next: { revalidate: 3600 } });
+        // Use Cloudflare Worker proxy if available
+        let fetchUrl = url;
+        const fetchOptions: RequestInit = { next: { revalidate: 3600 } };
+
+        if (PROXY_URL) {
+            // Encode the match URL as a query parameter
+            fetchUrl = `${PROXY_URL}?url=${encodeURIComponent(url)}`;
+            console.log(`🌐 [MATCH DETAILS] Fetching via Cloudflare Worker`);
+        } else {
+            // Direct fetch with headers
+            fetchOptions.headers = {
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            };
+            console.log(`🌐 [MATCH DETAILS] Direct fetch from CSI`);
+        }
+
+        const res = await fetch(fetchUrl, fetchOptions);
         if (!res.ok) {
             console.error(`Failed to fetch match details: ${res.status}`);
             return null;

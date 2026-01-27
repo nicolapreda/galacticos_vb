@@ -2,6 +2,8 @@ import * as cheerio from "cheerio";
 import { unstable_cache } from "next/cache";
 
 const LEAGUE_URL = "https://live.centrosportivoitaliano.it/25/Calcio-a-7/Lombardia/Bergamo/C105/?j=NEU9REZIJjRGPVBOSyY0Rz1FREkmNEg9RCY0ST1RICY0TD1ERkgmNDI9ZQ==";
+// Cloudflare Worker proxy URL - replace with your actual worker URL after deployment
+const PROXY_URL = process.env.CLOUDFLARE_WORKER_URL || "";
 const TEAM_NAME_CSI = "Uso Sforzatica G";
 const TEAM_NAME_DISPLAY = "GALACTICOS VB";
 
@@ -78,8 +80,12 @@ async function scrapeLeagueDataInternal(): Promise<LeagueData> {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
 
-        const res = await fetch(LEAGUE_URL, {
-            headers,
+        // Use Cloudflare Worker proxy if available, otherwise direct fetch
+        const fetchUrl = PROXY_URL || LEAGUE_URL;
+        console.log(`🌐 [SCRAPER] Fetching from: ${PROXY_URL ? 'Cloudflare Worker' : 'Direct CSI'}`);
+
+        const res = await fetch(fetchUrl, {
+            headers: PROXY_URL ? {} : headers, // Proxy doesn't need headers, it adds them
             next: { revalidate: 3600 },
             signal: controller.signal
         });

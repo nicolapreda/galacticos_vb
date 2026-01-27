@@ -18,7 +18,9 @@ export const dynamic = 'force-dynamic';
 // ... existing imports
 
 export default async function Home() {
+  console.log("🏠 [HOMEPAGE] Rendering homepage...");
   const latestNews = await getLatestNews();
+  console.log("📰 [HOMEPAGE] Got latest news, fetching league data...");
   const { standings, topScorers, nextMatch, matches = [] } = await getLeagueData();
 
   // Find Galacticos rank
@@ -329,6 +331,20 @@ export default async function Home() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5 text-sm font-bold">
+                            {standings.length === 0 && (
+                                <tr>
+                                    <td colSpan={5} className="p-8 text-center">
+                                        <div className="bg-red-500/20 border border-red-500 rounded p-4">
+                                            <p className="text-red-400 font-bold text-lg mb-2">⚠️ DEBUG: No standings data</p>
+                                            <p className="text-gray-400 text-sm">
+                                                Scraper returned empty array. Check server logs for errors.
+                                                <br/>
+                                                Total items: {standings.length} | Scorers: {topScorers.length} | Matches: {matches.length}
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
                             {standings.map((team, index) => {
                                 const isGalacticos = team.team === "GALACTICOS VB";
                                 return (

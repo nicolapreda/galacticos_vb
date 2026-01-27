@@ -12,6 +12,9 @@ async function getLatestNews(): Promise<News[]> {
 
 import HeroCollage from "@/components/HeroCollage";
 
+// Force dynamic rendering so scraper runs on every request
+export const dynamic = 'force-dynamic';
+
 // ... existing imports
 
 export default async function Home() {

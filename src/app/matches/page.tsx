@@ -3,7 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Calendar, MapPin, ChevronRight } from "lucide-react";
 
-export const revalidate = 3600; // Revalidate every hour
+// Force dynamic rendering so scraper runs on every request
+export const dynamic = 'force-dynamic';
 
 export default async function MatchesPage() {
   const { matches } = await getLeagueData();

@@ -56,17 +56,29 @@ export interface LeagueData {
 }
 
 async function scrapeLeagueDataInternal(): Promise<LeagueData> {
-    console.log("Fetching league data from CSI...");
+    console.log("🔄 [SCRAPER] Starting to fetch league data from CSI...");
     const headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     };
 
     try {
-        const res = await fetch(LEAGUE_URL, { headers, next: { revalidate: 3600 } }); // 1 Hour Cache
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
+        const res = await fetch(LEAGUE_URL, {
+            headers,
+            next: { revalidate: 3600 },
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
         if (!res.ok) {
+            console.error(`❌ Failed to fetch league data: HTTP ${res.status} ${res.statusText}`);
             throw new Error(`Failed to fetch league data: ${res.status}`);
         }
         const html = await res.text();
+        console.log(`✅ Successfully fetched ${html.length} bytes from CSI`);
         const $ = cheerio.load(html);
 
         // --- Standings ---
@@ -252,7 +264,12 @@ async function scrapeLeagueDataInternal(): Promise<LeagueData> {
         return { standings, topScorers, nextMatch, matches };
 
     } catch (error) {
-        console.error("Error scraping league data:", error);
+        console.error("❌ Error scraping league data:", error);
+        console.error("Error type:", error instanceof Error ? error.constructor.name : typeof error);
+        console.error("Error message:", error instanceof Error ? error.message : String(error));
+        if (error instanceof Error && error.stack) {
+            console.error("Stack trace:", error.stack);
+        }
         return { standings: [], topScorers: [], nextMatch: null, matches: [] };
     }
 }

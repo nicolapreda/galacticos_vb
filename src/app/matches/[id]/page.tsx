@@ -7,9 +7,8 @@ import { ArrowLeft, MapPin, Calendar, Clock, Trophy } from "lucide-react";
 import fs from 'fs';
 import path from 'path';
 
-// Force dynamic rendering checks periodically
-// Revalidate every 60 seconds (1 minute) to check for new gallery uploads quickly
-export const revalidate = 60; 
+// Force dynamic rendering so scraper runs on every request
+export const dynamic = 'force-dynamic'; 
 
 function findGalleryAlbum(match: CalendarMatch) {
     // Read fresh data from the filesystem

@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        revalidateTag("league");
+        revalidateTag("league", {});
         console.log("Revalidated league data");
         return NextResponse.json({ revalidated: true, now: Date.now() });
     } catch (err) {

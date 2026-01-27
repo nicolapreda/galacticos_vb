@@ -1,0 +1,110 @@
+[
+  {
+    "number": 1,
+    "name": "Andrea Cattaneo",
+    "role": "Portiere",
+    "image": "/assets/squadra/andrea-cattaneo.webp"
+  },
+  {
+    "number": 3,
+    "name": "Lorenzo Frutti",
+    "role": "Difensore",
+    "image": "/assets/squadra/lorenzo-frutti.webp"
+  },
+  {
+    "number": 4,
+    "name": "Samuele Carrobbio",
+    "role": "Difensore",
+    "image": "/assets/squadra/samuele-carrobbio.webp"
+  },
+  {
+    "number": 5,
+    "name": "Edoardo Mandaletti",
+    "role": "Difensore",
+    "image": "/assets/squadra/edoardo-mandaletti.webp"
+  },
+  {
+    "number": 6,
+    "name": "Mattia Zanchi",
+    "role": "Attaccante",
+    "image": "/assets/squadra/mattia-zanchi.webp"
+  },
+  {
+    "number": 17,
+    "name": "Riccardo Pozzi",
+    "role": "Centrocampista",
+    "image": "/assets/squadra/riccardo-pozzi.webp"
+  },
+  {
+    "number": 21,
+    "name": "Riccardo Ghezzi",
+    "role": "Difensore",
+    "image": "/assets/squadra/riccardo-ghezzi.webp"
+  },
+  {
+    "number": 7,
+    "name": "Alessandro Animamia",
+    "role": "Centrocampista",
+    "image": "/assets/squadra/alessandro-animamia.webp"
+  },
+  {
+    "number": 7,
+    "name": "Luca Spinedi",
+    "role": "Centrocampista",
+    "image": "/assets/squadra/luca-spinedi.webp"
+  },
+  {
+    "number": 10,
+    "name": "Davide Cancelli",
+    "role": "Centrocampista",
+    "image": "/assets/squadra/davide-cancelli.webp"
+  },
+  {
+    "number": 12,
+    "name": "Mirko Parimbelli",
+    "role": "Difensore",
+    "image": "/assets/squadra/mirko-parimbelli.webp"
+  },
+  {
+    "number": 13,
+    "name": "Andrea Belotti",
+    "role": "Attaccante",
+    "image": "/assets/squadra/andrea-belotti.webp"
+  },
+  {
+    "number": 14,
+    "name": "Andrea Nicoli",
+    "role": "Attaccante",
+    "image": "/assets/squadra/andrea-nicoli.webp"
+  },
+  {
+    "number": 0,
+    "name": "Nicola Preda",
+    "role": "Staff",
+    "image": "/assets/squadra/nicola-preda.webp"
+  },
+  {
+    "number": 22,
+    "name": "Tommaso Brevi",
+    "role": "Attaccante",
+    "image": "/assets/squadra/tommaso-brevi.webp"
+  },
+  {
+    "number": 0,
+    "name": "Enrico Valoti",
+    "role": "Staff",
+    "image": "/assets/squadra/enrico-valoti.webp"
+  },
+  {
+    "number": 0,
+    "name": "Mattia Poma",
+    "role": "Dirigente Sportivo",
+    "image": "/assets/squadra/mattia-poma.webp"
+  },
+  {
+    "number": 0,
+    "name": "Benedetta Petrò",
+    "role": "Staff",
+    "image": "/assets/squadra/benedetta-petr.webp"
+  }
+]

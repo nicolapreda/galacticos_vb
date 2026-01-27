@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  /* Core Brand Colors */
+  --color-galacticos-blue: #0047AB; /* Classic / Logo Blue */
+  
+  /* Flyer / Cinematic Palette */
+  --color-flyer-blue: #0057B8;  /* Vibrant Royal Blue from flyer */
+  --color-flyer-cyan: #00A2E8;  /* Cyan/Light Blue accent */
+  --color-flyer-red: #C00000;   /* Stamp Red */
+  --color-paper-white: #F0F0F0; /* Texture base */
+
+  --color-galacticos-dark: #001E45;
+  --color-galacticos-accent: #FFD700;
+  --color-galacticos-white: #FFFFFF;
+  --color-galacticos-gray: #F5F5F5;
+  
+  /* Legacy/Compatibility colors */
+  --color-dt-black: #000000;
+  --color-dt-white: #FFFFFF;
+  --color-dt-gray: #1a1a1a;
+
+  /* Fonts */
+  --font-anton: 'Anton', sans-serif;
+  --font-sans: 'Inter', sans-serif; /* Default sans override */
+}
+
+/* Custom Utilities based on legacy input.css */
+@layer components {
+  .btn-primary {
+    @apply bg-galacticos-blue border border-galacticos-blue text-white px-6 py-3 font-bold uppercase tracking-wider hover:bg-white hover:text-galacticos-blue transition-all duration-300 cursor-pointer;
+  }
+
+  .btn-accent {
+    @apply bg-galacticos-accent border border-galacticos-accent text-galacticos-dark px-6 py-3 font-bold uppercase tracking-wider hover:bg-white hover:text-galacticos-dark transition-all duration-300 cursor-pointer;
+  }
+
+  .card {
+    @apply bg-white text-galacticos-dark p-6 rounded-lg shadow-lg;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-in-out;
+  }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Base styles */
+body {
+  background-color: var(--color-galacticos-dark); /* Global Blue Background */
+  color: var(--color-galacticos-dark);
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-anton);
+  text-transform: uppercase;
+}
+
+/* Selection color */
+::selection {
+  background: var(--color-galacticos-accent);
+  color: var(--color-galacticos-dark);
+}

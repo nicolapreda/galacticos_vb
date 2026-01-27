@@ -15,10 +15,10 @@ Disallow: /admin/
 Disallow: /api/
 
 # Sitemap
-Sitemap: https://www.galacticosveleblu.it/sitemap.xml
+Sitemap: https://galacticosvb.it/sitemap.xml
 
 # Crawl-delay
 Crawl-delay: 1
 
 # Host
-Host: https://www.galacticosveleblu.it
+Host: https://galacticosvb.it

@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/revalidate?token=${CRON_SECRET}",
+      "schedule": "0 * * * *"
+    }
+  ]
+}

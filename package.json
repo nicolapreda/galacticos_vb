@@ -1,29 +1,38 @@
 {
   "name": "galacticos-vele-blu-website",
-  "version": "1.0.0",
-  "description": "Galacticos Vele Blu - Official Website",
-  "license": "ISC",
-  "author": "Galacticos Vele Blu",
-  "type": "commonjs",
-  "main": "server.js",
+  "version": "2.0.0",
+  "description": "Galacticos Vele Blu - Official Website (Next.js)",
+  "private": true,
   "scripts": {
-    "dev": "tailwindcss -i ./src/input.css -o ./public/assets/style.css --watch",
-    "build": "tailwindcss -i ./src/input.css -o ./public/assets/style.css --minify",
-    "start": "node server.js"
+    "dev": "next dev -p 3011",
+    "build": "next build",
+    "start": "next start -p 3011",
+    "lint": "eslint",
+    "sync-gallery": "node scripts/sync-gallery.js"
   },
   "dependencies": {
-    "bcrypt": "^6.0.0",
-    "dotenv": "^17.2.3",
-    "ejs": "^4.0.1",
-    "express": "^5.1.0",
-    "express-session": "^1.18.2",
-    "multer": "^2.0.2",
-    "sqlite3": "^5.1.7"
+    "better-sqlite3": "^12.6.2",
+    "cheerio": "^1.2.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.563.0",
+    "next": "16.1.5",
+    "next-auth": "^5.0.0-beta.30",
+    "puppeteer": "^24.36.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "tailwind-merge": "^3.4.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.21",
-    "baseline-browser-mapping": "^2.9.15",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.1"
+    "@tailwindcss/postcss": "^4",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.5",
+    "sharp": "^0.34.5",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

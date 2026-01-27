@@ -275,11 +275,20 @@ async function scrapeLeagueDataInternal(): Promise<LeagueData> {
 }
 
 // Export a cached version
+// TEMPORARY: Bypassing cache for debugging
+export const getLeagueData = async () => {
+    console.log("🔍 [DEBUG] getLeagueData called, bypassing cache...");
+    return scrapeLeagueDataInternal();
+};
+
+/* 
+// Original cached version - commented out for debugging
 export const getLeagueData = unstable_cache(
     async () => scrapeLeagueDataInternal(),
     ["league-data-v3"],
     { revalidate: 3600, tags: ["league"] }
 );
+*/
 
 export interface MatchEvent {
     time: string;

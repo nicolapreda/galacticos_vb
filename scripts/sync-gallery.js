@@ -192,10 +192,21 @@ async function main() {
         folders = JSON.parse(fs.readFileSync(JSON_PATH, 'utf8'));
     }
 
-    const browser = await puppeteer.launch({
+    const browserOptions = {
         headless: "new",
         args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
+    };
+
+    // Check for VPS-specific Chromium path
+    const vpsChromiumPath = '/usr/bin/chromium-browser';
+    if (fs.existsSync(vpsChromiumPath)) {
+        console.log(`   🐧 VPS detected! Using Chromium at: ${vpsChromiumPath}`);
+        browserOptions.executablePath = vpsChromiumPath;
+    } else {
+         console.log(`   💻 Local environment detected. Using bundled Chromium.`);
+    }
+
+    const browser = await puppeteer.launch(browserOptions);
     
     // Use a persistent page or new page per folder? New page is safer for cleanup.
     // But let's reuse one browser instance.

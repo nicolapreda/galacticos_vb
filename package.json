@@ -4,9 +4,9 @@
   "description": "Galacticos Vele Blu - Official Website (Next.js)",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3011",
+    "dev": "next dev -p 3002",
     "build": "next build",
-    "start": "next start -p 3011",
+    "start": "next start -p 3002",
     "lint": "eslint",
     "sync-gallery": "node scripts/sync-gallery.js"
   },

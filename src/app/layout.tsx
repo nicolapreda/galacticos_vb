@@ -20,6 +20,26 @@ export const metadata: Metadata = {
   icons: {
     icon: "/assets/logo.webp",
   },
+  openGraph: {
+    type: "website",
+    url: "https://galacticosvb.it/",
+    title: "Galacticos Vele Blu - Official Website",
+    description: "Sito ufficiale dei Galacticos Vele Blu",
+    images: [
+      {
+        url: "/assets/thumbnail.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Galacticos Vele Blu",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Galacticos Vele Blu - Official Website",
+    description: "Sito ufficiale dei Galacticos Vele Blu",
+    images: ["/assets/thumbnail.jpg"],
+  },
 };
 
 import Navbar from "@/components/Navbar";

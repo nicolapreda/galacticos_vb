@@ -113,8 +113,19 @@ export default function Footer() {
         </div>
         
         {/* Copyright */}
-        <div className="border-t border-white/10 pt-8 text-center text-xs text-gray-500 uppercase tracking-widest">
+        <div className="border-t border-white/10 pt-8 text-center text-xs text-gray-500 uppercase tracking-widest space-y-2">
           <p>©2026 Galacticos Vele Blu. All rights reserved.</p>
+          <p className="text-gray-600">
+            Developed with love ❤️ by{" "}
+            <a 
+              href="https://predanicola.it" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-flyer-cyan hover:text-white transition-colors underline"
+            >
+              Nicola Preda
+            </a>
+          </p>
         </div>
       </div>
     </footer>

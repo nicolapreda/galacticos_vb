@@ -39,7 +39,7 @@ export default function Navbar() {
               <div className="md:hidden">
                 <button
                   onClick={() => setIsOpen(true)}
-                  className="text-galacticos-dark focus:outline-none p-2"
+                  className="text-white focus:outline-none p-2"
                 >
                   <Menu className="w-8 h-8" />
                 </button>
@@ -67,7 +67,7 @@ export default function Navbar() {
               
               {/* Cart Icon for Mobile (Right aligned) */}
               <div className="md:hidden">
-                  <Link href="/shop" className="text-galacticos-dark p-2">
+                  <Link href="/shop" className="text-white p-2">
                     <ShoppingBag className="w-6 h-6" />
                   </Link>
               </div>
@@ -98,65 +98,55 @@ export default function Navbar() {
       {/* FULL SCREEN MOBILE OVERLAY */}
       <div
         className={clsx(
-          "fixed inset-0 bg-galacticos-dark z-[9999] transition-opacity duration-300 flex flex-col items-center justify-center",
+          "fixed inset-0 bg-gradient-to-br from-galacticos-dark via-[#001E45] to-galacticos-dark z-[9999] transition-all duration-500 flex flex-col items-center justify-center",
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}
       >
         {/* Close Button */}
         <button
           onClick={() => setIsOpen(false)}
-          className="absolute top-6 right-6 text-white focus:outline-none hover:text-galacticos-accent transition-colors"
+          className="absolute top-6 right-6 text-white focus:outline-none hover:text-flyer-cyan transition-colors z-50"
         >
           <X className="w-10 h-10" />
         </button>
 
-        {/* Menu Links */}
-          <div className="md:hidden bg-galacticos-dark border-t border-white/10 py-4 px-6 flex flex-col space-y-4 shadow-xl absolute top-20 left-0 w-full z-40 text-center">
-            <Link
-              href="/news"
-              className="text-white hover:text-flyer-cyan font-black uppercase tracking-wider text-lg transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              News
-            </Link>
-              <Link
-                href="/roster"
-                className="text-white hover:text-flyer-cyan transition-colors font-bold uppercase tracking-wider text-lg"
-                onClick={() => setIsOpen(false)}
-              >
-                Squadra
-              </Link>
-              <Link
-                href="/"
-                className="text-white hover:text-flyer-cyan font-black uppercase tracking-wider text-lg transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Home
-              </Link>
-              <Link
-                href="/shop"
-                className="text-white hover:text-flyer-cyan font-black uppercase tracking-wider text-lg transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Shop
-              </Link>
-            <Link
-              href="/matches"
-              className="text-white hover:text-flyer-cyan font-black uppercase tracking-wider text-lg transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              Calendario
-            </Link>
-          </div>
-
-        {/* Bottom Logo */}
-        <div className="mt-12 opacity-50 relative w-24 h-24">
-             <Image
-                src="/assets/logo.webp"
-                alt="Galacticos Vele Blu Logo"
-                fill
-                className="object-contain"
-             />
+        {/* Menu Links - Centered and Large */}
+        <div className="flex flex-col items-center justify-center space-y-8 px-6 w-full">
+          <Link
+            href="/news"
+            className="text-white hover:text-flyer-cyan font-black font-anton uppercase tracking-widest text-4xl transition-all hover:scale-110 transform"
+            onClick={() => setIsOpen(false)}
+          >
+            News
+          </Link>
+          <Link
+            href="/roster"
+            className="text-white hover:text-flyer-cyan font-black font-anton uppercase tracking-widest text-4xl transition-all hover:scale-110 transform"
+            onClick={() => setIsOpen(false)}
+          >
+            Squadra
+          </Link>
+          <Link
+            href="/"
+            className="text-flyer-cyan hover:text-white font-black font-anton uppercase tracking-widest text-5xl transition-all hover:scale-110 transform"
+            onClick={() => setIsOpen(false)}
+          >
+            Home
+          </Link>
+          <Link
+            href="/matches"
+            className="text-white hover:text-flyer-cyan font-black font-anton uppercase tracking-widest text-4xl transition-all hover:scale-110 transform"
+            onClick={() => setIsOpen(false)}
+          >
+            Calendario
+          </Link>
+          <Link
+            href="/shop"
+            className="text-white hover:text-flyer-cyan font-black font-anton uppercase tracking-widest text-4xl transition-all hover:scale-110 transform"
+            onClick={() => setIsOpen(false)}
+          >
+            Shop
+          </Link>
         </div>
       </div>
       

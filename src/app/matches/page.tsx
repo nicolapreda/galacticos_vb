@@ -63,13 +63,13 @@ export default async function MatchesPage() {
                                 
                                 <div className="flex items-center justify-between gap-4">
                                     <div className={`flex-1 text-center ${match.isHome ? "order-1" : "order-3"}`}>
-                                        <span className={`block font-black text-xl uppercase leading-none ${match.isHome ? "text-flyer-cyan" : "text-white"}`}>
+                                        <span className={`block font-black text-base md:text-xl uppercase leading-none ${match.isHome ? "text-flyer-cyan" : "text-white"} break-words`}>
                                             {match.isHome ? "Galacticos" : match.opponent}
                                         </span>
                                     </div>
                                     <div className="order-2 text-sm font-bold text-gray-500 italic">VS</div>
                                     <div className={`flex-1 text-center ${match.isHome ? "order-3" : "order-1"}`}>
-                                         <span className={`block font-black text-xl uppercase leading-none ${!match.isHome ? "text-flyer-cyan" : "text-white"}`}>
+                                         <span className={`block font-black text-base md:text-xl uppercase leading-none ${!match.isHome ? "text-flyer-cyan" : "text-white"} break-words`}>
                                             {!match.isHome ? "Galacticos" : match.opponent}
                                         </span>
                                     </div>
@@ -125,11 +125,11 @@ export default async function MatchesPage() {
                                     </div>
 
                                     {/* Teams & Score Grid */}
-                                    <div className="flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-4 md:gap-8 w-full md:w-auto">
+                                    <div className="flex-1 flex flex-col md:grid md:grid-cols-[1fr_auto_1fr] items-center gap-3 md:gap-8 w-full md:w-auto">
                                         
-                                        {/* Home Team (Always Align Right) */}
-                                        <div className="text-right">
-                                            <span className={`block font-black text-lg md:text-2xl uppercase truncate ${match.isHome ? "text-flyer-cyan" : "text-white"}`}>
+                                        {/* Home Team (Always Align Right on desktop, center on mobile) */}
+                                        <div className="text-center md:text-right w-full">
+                                            <span className={`block font-black text-base md:text-2xl uppercase ${match.isHome ? "text-flyer-cyan" : "text-white"} break-words`}>
                                                 {match.isHome ? "Galacticos" : match.opponent}
                                             </span>
                                         </div>
@@ -139,9 +139,9 @@ export default async function MatchesPage() {
                                             {match.result}
                                         </div>
 
-                                        {/* Away Team (Always Align Left) */}
-                                        <div className="text-left">
-                                            <span className={`block font-black text-lg md:text-2xl uppercase truncate ${!match.isHome ? "text-flyer-cyan" : "text-white"}`}>
+                                        {/* Away Team (Always Align Left on desktop, center on mobile) */}
+                                        <div className="text-center md:text-left w-full">
+                                            <span className={`block font-black text-base md:text-2xl uppercase ${!match.isHome ? "text-flyer-cyan" : "text-white"} break-words`}>
                                                 {!match.isHome ? "Galacticos" : match.opponent}
                                             </span>
                                         </div>

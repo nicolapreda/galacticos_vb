@@ -367,11 +367,10 @@ export default async function Home() {
                                             <div className="flex items-center gap-4">
                                                 <div className="relative w-8 h-8 flex-shrink-0">
                                                     {team.logo ? (
-                                                        <Image 
+                                                        <img 
                                                             src={team.logo} 
                                                             alt={team.team} 
-                                                            fill 
-                                                            className="object-contain"
+                                                            className="w-full h-full object-contain"
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full bg-white/10 rounded-full" />

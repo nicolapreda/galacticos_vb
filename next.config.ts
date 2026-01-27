@@ -5,17 +5,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "live.centrosportivoitaliano.it",
-      },
-      {
-        protocol: "https",
-        hostname: "static.centrosportivoitaliano.it",
-      },
-      {
-        protocol: "https",
         hostname: "drive.predanicola.it",
       },
     ],
+    // Disable optimization for images loaded through API proxy
+    unoptimized: false,
   },
 };
 

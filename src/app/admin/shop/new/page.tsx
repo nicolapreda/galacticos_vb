@@ -4,25 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, Save } from "lucide-react";
 
 export default function NewProductPage() {
-  async function handleSubmit(formData: FormData) {
-    "use server";
-    
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
-    const price = parseFloat(formData.get("price") as string);
-    const stock = parseInt(formData.get("stock") as string);
-    const image = formData.get("image") as string;
 
-    await createProduct({ 
-        name, 
-        description, 
-        price: isNaN(price) ? 0 : price, 
-        stock: isNaN(stock) ? 0 : stock, 
-        image 
-    });
-    
-    redirect("/admin/shop");
-  }
 
   return (
     <div className="max-w-2xl">

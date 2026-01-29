@@ -197,7 +197,7 @@ export default async function Home() {
                       <Link href={`/matches/${match.id}`} key={match.id} className="group relative block overflow-hidden border border-white/10 shadow-lg hover:shadow-flyer-cyan/20 transition-all duration-500 bg-[#020f21]">
                           <div className="p-8">
                               <span className="inline-block bg-flyer-blue text-white text-xs font-bold px-2 py-1 mb-4 uppercase tracking-wider transform -skew-x-12">
-                                  {match.group || "Campionato"}
+                                  "Campionato"
                               </span>
                               
                               <div className="flex justify-between items-center mb-6">

@@ -1,86 +1,51 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/lib/db";
-import { ShoppingBag, X, Plus, Minus, Trash2 } from "lucide-react";
-import { clsx } from "clsx";
+import { ShoppingBag, CheckCircle } from "lucide-react"; // Added CheckCircle
+import { useCart } from "@/context/CartContext";
 
-interface CartItem extends Product {
-  quantity: number;
-}
+export default function ShopClient({ products, success }: { products: Product[], success?: boolean }) {
+  const { cart, setCartOpen, addToCart, clearCart } = useCart();
+  const [showSuccess, setShowSuccess] = useState(false);
 
-export default function ShopClient({ products }: { products: Product[] }) {
-  const [cartOpen, setCartOpen] = useState(false);
-  const [cart, setCart] = useState<CartItem[]>([]);
-
-  // Load cart from localStorage
   useEffect(() => {
-    const savedCart = localStorage.getItem("galacticos-cart");
-    if (savedCart) {
-      try {
-        setCart(JSON.parse(savedCart));
-      } catch (e) {
-        console.error("Failed to parse cart", e);
+      if (success) {
+          clearCart();
+          setShowSuccess(true);
+          // Remove query params from URL without refresh to avoid re-triggering (optional but nice)
+          window.history.replaceState({}, '', '/shop');
       }
-    }
-  }, []);
-
-  // Save cart to localStorage
-  useEffect(() => {
-    localStorage.setItem("galacticos-cart", JSON.stringify(cart));
-  }, [cart]);
-
-  const addToCart = (product: Product) => {
-    if (product.stock === 0) return;
-    
-    setCart((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
-      if (existing) {
-        // Check stock limit
-        if (existing.quantity >= product.stock) return prev;
-        return prev.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [...prev, { ...product, quantity: 1 }];
-    });
-    setCartOpen(true);
-  };
-
-  const removeFromCart = (productId: number) => {
-    setCart((prev) => prev.filter((item) => item.id !== productId));
-  };
-
-  const updateQuantity = (productId: number, delta: number) => {
-    setCart((prev) => {
-      return prev.map((item) => {
-        if (item.id === productId) {
-          const newQty = item.quantity + delta;
-          if (newQty < 1) return item;
-          // Check stock
-          const product = products.find((p) => p.id === productId);
-          if (product && newQty > product.stock) return item;
-          return { ...item, quantity: newQty };
-        }
-        return item;
-      });
-    });
-  };
-
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  const handleCheckout = () => {
-    const text = `Ciao! Vorrei ordinare:\n\n${cart
-      .map((i) => `- ${i.name} x${i.quantity} (€${(i.price * i.quantity).toFixed(2)})`)
-      .join("\n")}\n\nTotale: €${total.toFixed(2)}`;
-    
-    const url = `https://wa.me/393331234567?text=${encodeURIComponent(text)}`; // Replace with real number
-    window.open(url, "_blank");
-  };
+  }, [success, clearCart]);
 
   return (
-    <div className="bg-galacticos-dark min-h-screen pb-20 text-white">
+    <div className="bg-galacticos-dark min-h-screen pb-20 text-white relative">
+      
+      {/* SUCCESS MODAL */}
+      {showSuccess && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+              <div className="bg-galacticos-dark border border-flyer-cyan/50 p-8 rounded-lg max-w-md w-full text-center shadow-2xl shadow-flyer-cyan/20 transform scale-100 animate-scale-in relative">
+                  <div className="mx-auto w-20 h-20 bg-flyer-cyan/20 rounded-full flex items-center justify-center mb-6">
+                      <CheckCircle className="w-10 h-10 text-flyer-cyan" />
+                  </div>
+                  <h2 className="text-3xl font-black font-anton uppercase text-white mb-2">
+                      Ordine Confermato!
+                  </h2>
+                  <p className="text-gray-300 mb-8">
+                      Grazie per il tuo acquisto. Abbiamo ricevuto il tuo ordine e ti invieremo presto una conferma via email (se disponibile).
+                  </p>
+                  <button 
+                      onClick={() => setShowSuccess(false)}
+                      className="w-full bg-flyer-cyan text-white font-bold uppercase py-3 rounded hover:bg-white hover:text-flyer-cyan transition-colors"
+                  >
+                      Torna allo Shop
+                  </button>
+              </div>
+          </div>
+      )}
+
       {/* Header */}
       <header className="relative bg-galacticos-dark text-white pt-32 pb-12 px-6 overflow-hidden">
         {/* Background Image */}
@@ -96,7 +61,7 @@ export default function ShopClient({ products }: { products: Product[] }) {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto">
-          <h1 className="text-6xl md:text-8xl font-black mb-4 font-anton uppercase drop-shadow-lg">
+          <h1 className="text-7xl md:text-9xl font-black mb-4 font-anton uppercase drop-shadow-lg leading-none tracking-wide">
             Official Shop
           </h1>
           <p className="text-xl text-gray-200 max-w-2xl drop-shadow-md border-l-4 border-flyer-cyan pl-4">
@@ -108,8 +73,9 @@ export default function ShopClient({ products }: { products: Product[] }) {
       {/* Filter Bar & Cart Trigger */}
       <div className="bg-galacticos-dark border-b border-white/10 sticky top-[80px] md:top-[89px] z-40 shadow-sm text-white">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <span className="font-bold text-sm uppercase tracking-wider">
-            {products.length} Prodotti
+          <span className="font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+             <span className="w-2 h-2 rounded-full bg-flyer-cyan animate-pulse"></span>
+             Latest Drops
           </span>
           <div className="flex gap-4 items-center">
             <button
@@ -132,154 +98,73 @@ export default function ShopClient({ products }: { products: Product[] }) {
       <main className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {products.map((product) => (
-            <div
+            <Link
+              href={`/shop/${product.id}`}
               key={product.id}
-              className="bg-white/5 border border-white/10 group cursor-pointer hover:bg-white/10 transition-all duration-300 rounded-lg overflow-hidden flex flex-col"
+              className="bg-[#0f141a] group cursor-pointer hover:bg-[#1a202c] transition-all duration-300 rounded-sm overflow-hidden flex flex-col shadow-lg block"
             >
-              {/* Image */}
-              <div className="aspect-square overflow-hidden bg-white relative p-4 flex items-center justify-center">
+              {/* Image - Studio Style (Uniform Background) */}
+              <div className="aspect-[4/5] overflow-hidden bg-gray-200 relative p-0 flex items-center justify-center">
+                
+                {/* Simulated Studio Background */}
+                <div className="absolute inset-0 bg-gradient-to-b from-gray-100 to-gray-300" />
+
                 <Image
                   src={product.image || "/assets/shop-teaser.png"}
                   alt={product.name}
                   fill
-                  className="object-contain object-center group-hover:scale-110 transition-transform duration-500"
+                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700 mix-blend-multiply"
                 />
                 
                 {/* Stock Badges */}
                 {product.stock === 0 ? (
-                   <span className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-black text-xl uppercase z-10">
+                   <span className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-black text-xl uppercase z-10 font-anton tracking-wider">
                      Sold Out
                    </span>
                 ) : product.stock < 5 ? (
-                   <span className="absolute top-2 right-2 bg-flyer-red text-white text-xs font-bold px-2 py-1 uppercase z-10">
+                   <span className="absolute top-2 right-2 bg-flyer-red text-white text-xs font-bold px-2 py-1 uppercase z-10 font-anton tracking-wider">
                      Pochi pezzi
                    </span>
                 ) : null}
               </div>
 
               {/* Content */}
-              <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-xl font-bold mb-1 line-clamp-1 text-white">{product.name}</h3>
-                <p className="text-sm text-gray-400 mb-4 line-clamp-2 flex-grow">
+              <div className="p-6 flex flex-col flex-grow relative">
+                <div className="flex justify-between items-start mb-2">
+                     <h3 className="text-2xl font-black font-anton uppercase text-white leading-none pr-4">{product.name}</h3>
+                     <span className="text-lg font-bold text-flyer-cyan shrink-0">
+                        €{product.price.toFixed(2)}
+                     </span>
+                </div>
+                
+                <p className="text-sm text-gray-500 mb-6 font-medium line-clamp-2 uppercase tracking-wide">
                   {product.description}
                 </p>
-                <div className="flex justify-between items-center mt-auto">
-                  <span className="text-lg font-black text-flyer-cyan">
-                    € {product.price.toFixed(2)}
-                  </span>
-                  <button
-                    onClick={() => addToCart(product)}
-                    disabled={product.stock === 0}
-                    className="bg-white text-galacticos-dark p-2 rounded-full hover:bg-flyer-cyan hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <ShoppingBag className="w-5 h-5" />
-                  </button>
+                
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    addToCart(product);
+                  }}
+                  disabled={product.stock === 0}
+                  className="w-full bg-white text-black font-black uppercase py-3 text-sm hover:bg-flyer-cyan hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-auto"
+                >
+                  <ShoppingBag className="w-4 h-4" /> Aggiungi
+                </button>
                 </div>
-              </div>
-            </div>
+            </Link>
           ))}
 
           {/* Fallback if empty */}
           {products.length === 0 && (
              <div className="col-span-full text-center py-20">
                 <h3 className="text-2xl font-bold text-gray-400 mb-4">Nessun prodotto disponibile</h3>
-                <p className="text-gray-500">Torna a trovarci presto per i nuovi arrivi!</p>
+                <p className="text-gray-500">I nuovi drop arriveranno presto, o vai nel pannello admin per aggiungerli!</p>
              </div>
           )}
         </div>
       </main>
-
-      {/* Cart Drawer */}
-      <div
-        className={clsx(
-          "fixed inset-0 z-[100] bg-black/50 transition-opacity duration-300",
-          cartOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        )}
-        onClick={() => setCartOpen(false)}
-      >
-        <div
-          className={clsx(
-            "fixed top-0 right-0 h-full w-full md:w-[400px] bg-galacticos-dark shadow-2xl transform transition-transform duration-300 flex flex-col border-l border-white/10",
-            cartOpen ? "translate-x-0" : "translate-x-full"
-          )}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Cart Header */}
-          <div className="p-6 border-b border-white/10 flex justify-between items-center text-white">
-            <h2 className="text-2xl font-anton uppercase">Il tuo carrello</h2>
-            <button onClick={() => setCartOpen(false)}>
-              <X className="w-6 h-6 hover:text-flyer-red" />
-            </button>
-          </div>
-
-          {/* Cart Items */}
-          <div className="flex-grow overflow-y-auto p-6 space-y-6">
-            {cart.length === 0 ? (
-              <p className="text-center text-gray-400">Il carrello è vuoto.</p>
-            ) : (
-              cart.map((item) => (
-                <div key={item.id} className="flex gap-4">
-                  <div className="relative w-20 h-20 bg-white rounded-md overflow-hidden flex-shrink-0">
-                    <Image
-                      src={item.image || "/assets/shop-teaser.png"}
-                      alt={item.name}
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                  <div className="flex-grow">
-                    <h4 className="font-bold text-sm mb-1 text-white">{item.name}</h4>
-                    <p className="text-flyer-cyan font-bold text-sm">
-                      € {(item.price * item.quantity).toFixed(2)}
-                    </p>
-                    <div className="flex items-center gap-3 mt-2 text-white">
-                       <div className="flex items-center border border-white/20 rounded">
-                          <button 
-                             onClick={() => updateQuantity(item.id, -1)}
-                             className="p-1 hover:bg-white/10"
-                          >
-                             <Minus className="w-4 h-4" />
-                          </button>
-                          <span className="px-2 text-sm font-bold min-w-[20px] text-center">{item.quantity}</span>
-                          <button 
-                             onClick={() => updateQuantity(item.id, 1)}
-                             className="p-1 hover:bg-white/10"
-                          >
-                             <Plus className="w-4 h-4" />
-                          </button>
-                       </div>
-                       <button 
-                          onClick={() => removeFromCart(item.id)}
-                          className="text-gray-400 hover:text-flyer-red"
-                       >
-                          <Trash2 className="w-4 h-4" />
-                       </button>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-
-          {/* Cart Footer */}
-          <div className="p-6 border-t border-white/10 bg-black/20 text-white">
-            <div className="flex justify-between items-center mb-4 text-xl font-black uppercase">
-              <span>Totale</span>
-              <span>€ {total.toFixed(2)}</span>
-            </div>
-            <button
-              onClick={handleCheckout}
-              disabled={cart.length === 0}
-              className="w-full bg-flyer-cyan text-galacticos-dark font-black uppercase py-4 rounded hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Procedi all'ordine
-            </button>
-            <p className="text-xs text-center text-gray-400 mt-4">
-               L'ordine verrà inviato via WhatsApp per la conferma della disponibilità.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

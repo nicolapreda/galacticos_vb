@@ -21,6 +21,41 @@ db.exec(`
         date TEXT NOT NULL,
         category TEXT DEFAULT 'News'
     );
+
+    CREATE TABLE IF NOT EXISTS match_comments (
+        match_id TEXT PRIMARY KEY,
+        comment TEXT NOT NULL,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS products (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        description TEXT NOT NULL,
+        price REAL NOT NULL,
+        image TEXT,
+        stock INTEGER DEFAULT 0
+    );
+    CREATE TABLE IF NOT EXISTS orders (
+        id TEXT PRIMARY KEY,
+        customer_email TEXT,
+        customer_name TEXT,
+        shipping_address TEXT,
+        total_amount REAL NOT NULL,
+        status TEXT DEFAULT 'pending', 
+        stripe_session_id TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS order_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        order_id TEXT NOT NULL,
+        product_name TEXT NOT NULL,
+        quantity INTEGER NOT NULL,
+        price REAL NOT NULL,
+        size TEXT,
+        FOREIGN KEY(order_id) REFERENCES orders(id)
+    );
 `);
 
 export interface News {
@@ -47,4 +82,24 @@ export interface Product {
     price: number;
     image: string | null;
     stock: number;
+}
+
+export interface Order {
+    id: string;
+    customer_email: string;
+    customer_name: string;
+    shipping_address: string; // JSON string
+    total_amount: number;
+    status: string;
+    stripe_session_id: string;
+    created_at: string;
+}
+
+export interface OrderItem {
+    id: number;
+    order_id: string;
+    product_name: string;
+    quantity: number;
+    price: number;
+    size: string | null;
 }

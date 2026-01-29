@@ -108,6 +108,11 @@ export default function Footer() {
                   Squadra
                 </Link>
               </li>
+              <li>
+                <Link href="/admin/shop" className="hover:text-white transition text-xs text-gray-600">
+                  Admin Layer
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

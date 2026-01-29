@@ -1,3 +1,4 @@
+import { db } from "@/lib/db";
 import { getLeagueData, CalendarMatch } from "@/lib/scraper";
 import MatchDetailsSection from "@/components/MatchDetailsSection";
 import { notFound } from "next/navigation";
@@ -67,8 +68,13 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
 
   const album = findGalleryAlbum(match);
 
+  // Fetch Comment
+  const commentRecord = db.prepare("SELECT comment FROM match_comments WHERE match_id = ?").get(match.id) as { comment: string } | undefined;
+
   // Background Image (Random or based on status)
   const bgImage = isPlayed ? "/assets/DSC08466.webp" : "/assets/DSC08437.webp";
+
+
 
   // Calculate Pre-Match Stats if not played
   let preMatchStats = null;
@@ -253,6 +259,7 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
                     albumCover={album?.cover || undefined}
                     albumImages={album?.images || []}
                     preMatchStats={preMatchStats}
+                    comment={commentRecord?.comment}
                 />
             </div>
       </div>

@@ -21,7 +21,7 @@ export default function Navbar() {
   }, [isOpen]);
 
   const navLinks = [
-    { href: "/news", label: "NEWS" },
+    { href: "/gallery", label: "MEDIA GALLERY" },
     { href: "/roster", label: "SQUADRA" },
     { href: "/", label: "HOME", primary: true },
     { href: "/matches", label: "CALENDARIO" },
@@ -35,18 +35,9 @@ export default function Navbar() {
           <div className="flex flex-col items-center">
             {/* Top Row: Logo & Socials */}
             <div className="w-full flex justify-between items-center mb-4 relative h-20">
-              {/* Mobile Menu Button */}
-              <div className="md:hidden">
-                <button
-                  onClick={() => setIsOpen(true)}
-                  className="text-white focus:outline-none p-2"
-                >
-                  <Menu className="w-8 h-8" />
-                </button>
-              </div>
-
+              
               {/* Logo (Absolute Center) */}
-              <div className="absolute left-1/2 transform -translate-x-1/2">
+              <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
                 <Link href="/" className="group">
                   <div className="relative w-20 h-20">
                     <Image
@@ -60,36 +51,67 @@ export default function Navbar() {
                 </Link>
               </div>
 
-              {/* Social Icons (Right) - REMOVED as per request */}
-              <div className="hidden md:flex space-x-3 items-center w-20">
-                 {/* Placeholder to balance the logo if needed, or just empty */}
+              {/* Social Icons (Desktop Right) */}
+              <div className="hidden md:flex space-x-3 items-center w-20 ml-auto">
+                 {/* Placeholder */}
               </div>
-              
-              {/* Cart Icon for Mobile (Right aligned) */}
-              <div className="md:hidden">
-                  <Link href="/shop" className="text-white p-2">
-                    <ShoppingBag className="w-6 h-6" />
-                  </Link>
+
+              {/* Mobile Menu Button (Right) */}
+              <div className="md:hidden ml-auto z-20">
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="text-white focus:outline-none p-2 hover:text-flyer-cyan transition-colors"
+                >
+                  <Menu className="w-8 h-8" />
+                </button>
               </div>
             </div>
 
             {/* Bottom Row: Navigation Links (Desktop) */}
-            <div className="hidden md:flex space-x-8 items-center justify-center w-full border-t border-gray-100 pt-3">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className={clsx(
-                    "font-anton text-lg uppercase tracking-wider transition-colors",
-                    link.primary
-                      ? "text-flyer-cyan hover:text-white"
-                      : "hover:text-flyer-cyan",
-                     pathname === link.href && !link.primary && "text-flyer-cyan"
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
+            <div className="hidden md:grid grid-cols-3 items-center w-full border-t border-gray-100 pt-3 relative">
+              {/* Left Links */}
+              <div className="flex justify-end space-x-8 pr-8">
+                  {navLinks.slice(0, 2).map((link) => (
+                    <Link
+                      key={link.label}
+                      href={link.href}
+                      className={clsx(
+                        "font-anton text-lg uppercase tracking-wider transition-colors hover:text-flyer-cyan",
+                        pathname === link.href && "text-flyer-cyan"
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+              </div>
+
+              {/* Center Link (HOME) */}
+              <div className="flex justify-center">
+                   <Link
+                      href="/"
+                      className={clsx(
+                        "font-anton text-xl uppercase tracking-widest transition-colors text-flyer-cyan hover:text-white"
+                      )}
+                    >
+                      HOME
+                    </Link>
+              </div>
+
+              {/* Right Links */}
+              <div className="flex justify-start space-x-8 pl-8">
+                  {navLinks.slice(3).map((link) => (
+                    <Link
+                      key={link.label}
+                      href={link.href}
+                      className={clsx(
+                        "font-anton text-lg uppercase tracking-wider transition-colors hover:text-flyer-cyan",
+                        pathname === link.href && "text-flyer-cyan"
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+              </div>
             </div>
           </div>
         </div>
@@ -113,11 +135,11 @@ export default function Navbar() {
         {/* Menu Links - Centered and Large */}
         <div className="flex flex-col items-center justify-center space-y-8 px-6 w-full">
           <Link
-            href="/news"
+            href="/gallery"
             className="text-white hover:text-flyer-cyan font-black font-anton uppercase tracking-widest text-4xl transition-all hover:scale-110 transform"
             onClick={() => setIsOpen(false)}
           >
-            News
+            Media Gallery
           </Link>
           <Link
             href="/roster"

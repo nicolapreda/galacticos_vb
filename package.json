@@ -11,6 +11,7 @@
     "sync-gallery": "node scripts/sync-gallery.js"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^8.7.0",
     "better-sqlite3": "^12.6.2",
     "cheerio": "^1.2.0",
     "clsx": "^2.1.1",
@@ -20,6 +21,7 @@
     "puppeteer": "^24.36.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "stripe": "^20.3.0",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.3.6"
   },

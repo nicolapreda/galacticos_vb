@@ -12,7 +12,7 @@ export default function GalleryPage() {
       <section className="bg-[#001E45] text-white py-16 mb-12 relative overflow-hidden">
          <div className="absolute inset-0 opacity-20 bg-[url('/assets/hero-bg.jpg')] bg-cover mix-blend-overlay" />
          <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-            <h1 className="text-6xl md:text-8xl font-black font-anton uppercase mb-4">
+            <h1 className="text-6xl md:text-8xl font-black font-anton uppercase mb-4 tracking-wide">
                 Media <span className="text-flyer-cyan">Gallery</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">

@@ -2,39 +2,42 @@ import Link from "next/link";
 import Image from "next/image";
 import { db, News } from "@/lib/db";
 import { getLeagueData, NextMatch } from "@/lib/scraper";
-import { ArrowRight, MapPin, Calendar, ExternalLink, Camera } from "lucide-react";
+import { ArrowRight, MapPin, Calendar, ExternalLink, Camera, ChevronRight } from "lucide-react";
 import folders from "@/data/gallery-folders.json";
-
-async function getLatestNews(): Promise<News[]> {
-  const stmnt = db.prepare("SELECT * FROM news ORDER BY date DESC LIMIT 4");
-  return stmnt.all() as News[];
-}
-
 import HeroCollage from "@/components/HeroCollage";
+import Countdown from "@/components/Countdown";
 
 // Force dynamic rendering so scraper runs on every request
 export const dynamic = 'force-dynamic';
 
-// ... existing imports
-
 export default async function Home() {
   console.log("🏠 [HOMEPAGE] Rendering homepage...");
-  const latestNews = await getLatestNews();
-  console.log("📰 [HOMEPAGE] Got latest news, fetching league data...");
+  // const latestNews = await getLatestNews(); // Deprecated call for now
+  console.log("📰 [HOMEPAGE] Fetching league data...");
   const { standings, topScorers, nextMatch, matches = [] } = await getLeagueData();
 
   // Find Galacticos rank
   const teamStats = standings.find((s) => s.team === "GALACTICOS VB");
-  const isMatchWeek = !!nextMatch;
   
-  // Find ID for next match to link to details
+  // Find ID for next match
   const nextMatchId = nextMatch && matches.find(m => m.date === nextMatch.date && m.opponent === nextMatch.opponent)?.id;
+
+  // Get Latest Matches (played)
+  const latestMatches = matches
+    .filter(m => m.played)
+    .reverse() // Newest first
+    .slice(0, 3); // Take top 3
+
+  // Fetch comments for these matches
+  const matchIds = latestMatches.map(m => m.id);
+  const comments = matchIds.length > 0 ? db.prepare(`SELECT * FROM match_comments WHERE match_id IN (${matchIds.map(() => '?').join(',')})`).all(...matchIds) as { match_id: string, comment: string }[] : [];
+  const commentsMap = new Map(comments.map(c => [c.match_id, c.comment]));
 
   return (
     <div className="bg-[#001E45] min-h-screen text-white selection:bg-flyer-cyan selection:text-galacticos-dark">
       
       {/* 
-        HERO SECTION - SWAG MODE 
+        HERO SECTION - SWAG MODE + COUNTDOWN
       */}
       <section className="relative h-screen w-full overflow-hidden flex items-center justify-center">
         {/* Dynamic Collage Background */}
@@ -43,267 +46,47 @@ export default async function Home() {
         {/* Content Container */}
         <div className="relative z-10 container mx-auto px-6 h-full flex flex-col justify-center items-center text-center">
             
-            {/* BRANDING / BIG TITLE */}
             <div className="max-w-6xl animate-fade-in-up flex flex-col items-center">
                 <span className="inline-block py-1 px-3 border border-flyer-cyan text-flyer-cyan font-bold uppercase tracking-[0.2em] mb-4 backdrop-blur-sm text-sm bg-black/50">
                     Est. 2023 • Bergamo
                 </span>
                 
-                <h1 className="text-6xl md:text-9xl font-black font-anton text-white leading-[0.85] uppercase mb-8 drop-shadow-2xl">
-                    <span className="block text-white drop-shadow-md" style={{ WebkitTextStroke: "2px black" }}>Locally Hated</span>
-                    <span className="block text-transparent bg-clip-text bg-gradient-to-b from-flyer-cyan to-flyer-blue drop-shadow-xl filter backdrop-brightness-150">Globally Known</span>
+                <h1 className="text-6xl md:text-9xl font-black font-anton text-white leading-tight uppercase mb-8 drop-shadow-2xl">
+                    <span className="block text-white drop-shadow-md">Locally Hated</span>
+                    <span className="block text-white drop-shadow-xl">Globally Known</span>
                 </h1>
+
+                {/* COUNTDOWN OVERLAY */}
+                {nextMatch && (
+                  <div className="mb-10 w-full max-w-4xl bg-black/40 backdrop-blur-md border-y border-white/10 py-6 px-4 md:px-12 transform -skew-x-12">
+                     <div className="skew-x-[12deg]">
+                        <p className="text-flyer-cyan uppercase tracking-widest text-sm font-bold mb-4 text-center">
+                            Prossimo Match: {nextMatch.opponent}
+                        </p>
+                        <Countdown targetDate={`${nextMatch.date} ${nextMatch.time}`} />
+                     </div>
+                  </div>
+                )}
                 
-                <p className="text-xl md:text-2xl text-gray-200 font-bold max-w-2xl mb-10 border-b-4 border-flyer-cyan pb-4 drop-shadow-md italic uppercase tracking-wider">
-                    Non siamo qui per partecipare. <br/>
-                    Siamo qui per comandare.
-                </p>
+
                 
                 <div className="flex flex-wrap gap-6 justify-center">
                     <Link href="/roster" className="group bg-white text-galacticos-dark font-black uppercase px-8 py-4 text-lg hover:bg-flyer-cyan hover:text-white transition-all duration-300 flex items-center gap-3 skew-x-[-10deg] shadow-lg hover:shadow-flyer-cyan/50">
                         <span className="skew-x-[10deg] inline-block">Scopri la Rosa</span>
                         <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform skew-x-[10deg]" />
                     </Link>
-
                 </div>
             </div>
         </div>
-
-
       </section>
 
       {/* 
-        MATCH DAY STRIP 
-        Wide strip inspired by the "Flyer" aesthetic (Paper texture, red stamps).
+        STANDINGS SECTION (MOVED UP)
       */}
-      {nextMatch && (
-        <section className="relative z-20 -mt-20 mx-4 md:mx-auto max-w-7xl">
-            <div className="bg-galacticos-blue text-white shadow-2xl rounded-sm overflow-hidden flex flex-col md:flex-row relative border border-white/10">
-                 {/* Decorative Red Stamp Line on top */}
-                 <div className="absolute top-0 left-0 w-full h-2 bg-flyer-red z-30" />
-
-                 {/* LEFT: Date & Info "Stamp" */}
-                 <div className="md:w-1/4 bg-blue-900/50 p-8 flex flex-col justify-center items-center text-center border-r border-white/10 relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "url('/assets/pattern-dots.svg')" }} />
-                    <span className="font-anton text-flyer-red text-6xl md:text-7xl leading-none rotate-[-5deg] block mb-2 opacity-90 drop-shadow-md">
-                        {nextMatch.date.split('/')[0]}
-                    </span>
-                    <span className="font-bold uppercase tracking-widest text-blue-200">
-                        {(() => {
-                            const [day, month, year] = nextMatch.date.split('/').map(Number);
-                            const dateObj = new Date(2000 + year, month - 1, day);
-                            return dateObj.toLocaleString('it-IT', { month: 'long' });
-                        })()}
-                    </span>
-                    <div className="mt-4 flex items-center gap-2 text-sm font-bold bg-white text-galacticos-blue px-3 py-1 rounded-full">
-                        <Calendar className="w-3 h-3" />
-                        {nextMatch.time}
-                    </div>
-                 </div>
-
-                 {/* CENTER: Matchup */}
-                 <div className="flex-1 p-8 flex items-center justify-between relative">
-                    {/* Home Team */}
-                    <div className="flex-1 text-center">
-                        <div className="text-3xl md:text-5xl font-black font-anton text-white uppercase leading-none mb-2">
-                             {nextMatch.isHome ? "GALACTICOS" : nextMatch.opponent}
-                        </div>
-                        {nextMatch.isHome && <span className="text-xs font-bold text-flyer-cyan uppercase tracking-wider">Home Team</span>}
-                    </div>
-
-                    {/* VS */}
-                    <div className="px-4">
-                        <span className="font-black text-4xl text-blue-300/30 font-anton italic">VS</span>
-                    </div>
-
-                    {/* Away Team */}
-                    <div className="flex-1 text-center">
-                         <div className="text-3xl md:text-5xl font-black font-anton text-white uppercase leading-none mb-2 text-outline-white">
-                            {!nextMatch.isHome ? "GALACTICOS" : nextMatch.opponent}
-                        </div>
-                        {!nextMatch.isHome && <span className="text-xs font-bold text-flyer-cyan uppercase tracking-wider">Away Team</span>}
-                    </div>
-                 </div>
-
-                 {/* RIGHT: Location & Action */}
-                 <Link href={nextMatchId ? `/matches/${nextMatchId}` : "#"} 
-                     className="md:w-1/4 bg-flyer-blue text-white p-8 flex flex-col justify-center items-center text-center relative overflow-hidden group cursor-pointer hover:bg-flyer-cyan transition-colors duration-500">
-                     <div className="relative z-10">
-                        <div className="flex items-center justify-center gap-2 mb-2 opacity-80">
-                            <MapPin className="w-4 h-4" />
-                            <span className="text-xs font-bold uppercase truncate max-w-[150px]">{nextMatch.location}</span>
-                        </div>
-                        <span className="font-black font-anton text-2xl uppercase tracking-wider border-2 border-white px-4 py-2 inline-block group-hover:bg-white group-hover:text-flyer-blue transition-all">
-                            Dettagli
-                        </span>
-                     </div>
-                     {/* Background Pattern */}
-                     <div className="absolute inset-0 opacity-20 bg-[url('/assets/hero-bg.jpg')] bg-cover mix-blend-overlay" />
-                 </Link>
-            </div>
-        </section>
-      )}
-
-
-
-      <section className="relative z-30 py-40 bg-[#001E45] border-t border-white/10">
-          <div className="container mx-auto px-6 max-w-7xl">
-              <div className="flex items-end justify-between mb-12 border-b border-white/10 pb-4">
-                  <h2 className="text-5xl md:text-7xl font-black font-anton uppercase text-white leading-[0.85]">
-                      Ultime <br/>
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-flyer-cyan to-flyer-blue">Notizie</span>
-                  </h2>
-                  <Link href="/news" className="hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors">
-                      Tutte le News <ArrowRight className="w-4 h-4" />
-                  </Link>
-              </div>
-
-              {/* News Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {latestNews.map((news, i) => (
-                      <Link href={`/news/${news.id}`} key={news.id} className="group relative h-[400px] block overflow-hidden border border-white/10 shadow-lg hover:shadow-flyer-cyan/20 transition-all duration-500">
-                          <Image
-                              src={news.image || "/assets/placeholder.webp"}
-                              alt={news.title}
-                              fill
-                              className="object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90" />
-                          
-                          <div className="absolute bottom-0 left-0 p-8 w-full">
-                              <span className="inline-block bg-flyer-red text-white text-xs font-bold px-2 py-1 mb-3 uppercase tracking-wider transform -skew-x-12">
-                                  News
-                              </span>
-                              <h3 className="text-2xl font-black font-anton uppercase text-white leading-tight mb-2 group-hover:text-flyer-cyan transition-colors">
-                                  {news.title}
-                              </h3>
-                              <p className="text-sm text-gray-400 line-clamp-2 mb-4 font-medium">
-                                  {news.content}
-                              </p>
-                              <span className="text-xs font-bold uppercase tracking-widest text-flyer-cyan flex items-center gap-2">
-                                  Leggi Articolo <ArrowRight className="w-3 h-3 transform group-hover:translate-x-1 transition-transform" />
-                              </span>
-                          </div>
-                      </Link>
-                  ))}
-              </div>
-              
-              <div className="mt-8 text-center md:hidden">
-                    <Link href="/news" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-white border-b border-flyer-cyan pb-1">
-                      Tutte le News <ArrowRight className="w-4 h-4" />
-                  </Link>
-              </div>
-          </div>
-      </section>
-
-      {/* 
-        GALLERY SECTION
-      */}
-      <section className="relative z-30 py-40 bg-[#001E45] border-t border-white/10">
-           <div className="container mx-auto px-6 max-w-7xl">
-               <div className="flex items-end justify-between mb-12 border-b border-white/10 pb-4">
-                   <h2 className="text-5xl md:text-7xl font-black font-anton uppercase text-white leading-[0.85]">
-                       Media <br/>
-                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-flyer-cyan to-flyer-blue">Gallery</span>
-                   </h2>
-                   <Link href="/gallery" className="hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors">
-                       Tutti gli Album <ArrowRight className="w-4 h-4" />
-                   </Link>
-               </div>
-
-
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                   {folders
-                        .filter(f => f.cover && f.cover.trim() !== "") // Filter out folders without covers
-                        .slice(0, 4)
-                        .map((folder, index) => { 
-                        const folderUrl = `https://drive.predanicola.it/s/i4rkc43fwrMEKB5?dir=${encodeURIComponent("/" + folder.name)}`;
-
-                        return (
-                            <a 
-                                key={index} 
-                                href={folderUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="group bg-[#001E45] border border-white/10 rounded-xl overflow-hidden shadow-lg hover:shadow-flyer-cyan/20 transition-all duration-300 flex flex-col"
-                            >
-                                <div className="h-48 relative items-center justify-center flex overflow-hidden bg-black/50">
-                                    <Image 
-                                        src={folder.cover as string} 
-                                        alt={folder.name} 
-                                        fill 
-                                        className="object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"
-                                        unoptimized
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
-                                </div>
-                                <div className="p-4">
-                                     <h3 className="text-lg font-black font-anton text-white uppercase mb-1 truncate group-hover:text-flyer-cyan transition-colors">
-                                        {folder.name}
-                                    </h3>
-                                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2">
-                                        Vedi Foto <ExternalLink className="w-3 h-3" />
-                                    </span>
-                                </div>
-                            </a>
-                        )
-                   })}
-               </div>
-               
-               <div className="mt-8 text-center md:hidden">
-                    <Link href="/gallery" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-white border-b border-flyer-cyan pb-1">
-                       Tutti gli Album <ArrowRight className="w-4 h-4" />
-                   </Link>
-               </div>
-           </div>
-      </section>
-
-      {/* 
-        SHOP SECTION 
-      */}
-      <section className="relative z-30 min-h-[80vh] flex items-center border-t border-white/10 overflow-hidden group">
-          {/* Background Image with Parallax-like feel */}
-          <div className="absolute inset-0 z-0">
-               <Image 
-                   src="/assets/DSC08437.webp" 
-                   alt="Merch Background" 
-                   fill 
-                   className="object-cover transition-transform duration-[2s] group-hover:scale-105"
-                   priority
-               />
-               <div className="absolute inset-0 bg-gradient-to-r from-[#001E45] via-[#001E45]/80 to-transparent" />
-          </div>
-
-          <div className="container relative z-10 mx-auto px-6 max-w-7xl flex flex-col justify-center items-start h-full">
-               <div className="max-w-2xl animate-fade-in-up">
-                   <span className="inline-block py-1 px-3 border border-flyer-cyan text-flyer-cyan font-bold uppercase tracking-[0.2em] mb-6 backdrop-blur-sm text-sm bg-black/50 transform -skew-x-12">
-                       Official Store
-                   </span>
-                   <h2 className="text-6xl md:text-8xl font-black font-anton text-white leading-[0.85] uppercase mb-8 drop-shadow-2xl">
-                       Indossa <br/>
-                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-flyer-cyan to-flyer-blue">La Maglia</span>
-                   </h2>
-                   <p className="text-xl text-gray-200 font-bold mb-10 drop-shadow-md max-w-lg">
-                       Porta i colori dei Galacticos sempre con te. 
-                       Scopri la nuova collezione ufficiale.
-                   </p>
-                   
-                   <Link href="/shop" className="group bg-white text-galacticos-dark font-black uppercase px-10 py-5 text-xl hover:bg-flyer-cyan hover:text-white transition-all duration-300 inline-flex items-center gap-3 skew-x-[-10deg] shadow-2xl hover:shadow-flyer-cyan/50">
-                       <span className="skew-x-[10deg] inline-block">Vai allo Shop</span>
-                       <ArrowRight className="w-6 h-6 transform group-hover:translate-x-1 transition-transform skew-x-[10deg]" />
-                   </Link>
-               </div>
-          </div>
-      </section>
-
-      {/* 
-        STANDINGS SECTION 
-        Full width section dedicated to standings.
-      */}
-      <section className="relative z-20 py-40 bg-gradient-to-b from-[#001E45] to-black border-t border-white/5">
+      <section className="relative z-20 py-24 bg-gradient-to-b from-[#001E45] to-black border-t border-white/5">
          <div className="container mx-auto px-6 max-w-5xl">
-             <div className="flex items-end justify-between mb-12">
-                  <h2 className="text-5xl md:text-7xl font-black font-anton uppercase text-white leading-[0.85]">
+             <div className="flex items-end justify-between mb-8">
+                  <h2 className="text-6xl md:text-8xl font-black font-anton uppercase text-white leading-none tracking-wide">
                       La <br/>
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-flyer-cyan to-flyer-blue">Classifica</span>
                   </h2>
@@ -331,20 +114,6 @@ export default async function Home() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5 text-sm font-bold">
-                            {standings.length === 0 && (
-                                <tr>
-                                    <td colSpan={5} className="p-8 text-center">
-                                        <div className="bg-red-500/20 border border-red-500 rounded p-4">
-                                            <p className="text-red-400 font-bold text-lg mb-2">⚠️ DEBUG: No standings data</p>
-                                            <p className="text-gray-400 text-sm">
-                                                Scraper returned empty array. Check server logs for errors.
-                                                <br/>
-                                                Total items: {standings.length} | Scorers: {topScorers.length} | Matches: {matches.length}
-                                            </p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            )}
                             {standings.map((team, index) => {
                                 const isGalacticos = team.team === "GALACTICOS VB";
                                 return (
@@ -396,21 +165,168 @@ export default async function Home() {
                         </tbody>
                     </table>
                 </div>
-                
-                {teamStats && (
-                   <div className="mt-4 bg-flyer-blue/20 p-4 rounded-md border border-flyer-blue/30 flex items-center justify-between">
-                         <div className="flex items-center gap-3">
-                            <span className="font-black text-xl text-white">#{teamStats.rank}</span>
-                            <span className="font-bold text-flyer-cyan uppercase">Galacticos VB</span>
-                         </div>
-                         <span className="font-black text-lg text-white">{teamStats.points} PT</span>
-                   </div>
-                )}
             </div>
         </div>
       </section>
 
+      {/* 
+        LATEST MATCHES SECTION (REPLACED NEWS)
+      */}
+      <section className="relative z-30 py-20 bg-[#001E45] border-t border-white/10">
+          <div className="container mx-auto px-6 max-w-7xl">
+              <div className="flex items-end justify-between mb-12 border-b border-white/10 pb-4">
+                  <h2 className="text-6xl md:text-8xl font-black font-anton uppercase text-white leading-none tracking-wide">
+                      Ultimi <br/>
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-flyer-cyan to-flyer-blue">Match</span>
+                  </h2>
+                  <Link href="/matches" className="hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors">
+                      Vedi Tutti <ArrowRight className="w-4 h-4" />
+                  </Link>
+              </div>
 
+              {/* Matches Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {latestMatches.length > 0 ? latestMatches.map((match) => {
+                       const [homeScore, awayScore] = (match.result || "0-0").split("-").map(s => parseInt(s.trim()));
+                       const galacticosScore = match.isHome ? homeScore : awayScore;
+                       const opponentScore = match.isHome ? awayScore : homeScore;
+                       const isWin = galacticosScore > opponentScore;
+                       const isDraw = galacticosScore === opponentScore;
+
+                      return (
+                      <Link href={`/matches/${match.id}`} key={match.id} className="group relative block overflow-hidden border border-white/10 shadow-lg hover:shadow-flyer-cyan/20 transition-all duration-500 bg-[#020f21]">
+                          <div className="p-8">
+                              <span className="inline-block bg-flyer-blue text-white text-xs font-bold px-2 py-1 mb-4 uppercase tracking-wider transform -skew-x-12">
+                                  {match.group || "Campionato"}
+                              </span>
+                              
+                              <div className="flex justify-between items-center mb-6">
+                                  <div className="text-center">
+                                      <span className={`block text-3xl font-black font-anton mb-1 ${match.isHome ? "text-flyer-cyan" : "text-white"}`}>
+                                        {homeScore}
+                                      </span>
+                                      <span className="text-xs font-bold text-gray-500 uppercase">{match.isHome ? "Galacticos" : match.opponent}</span>
+                                  </div>
+                                  <div className="text-2xl font-black text-white/20">-</div>
+                                  <div className="text-center">
+                                      <span className={`block text-3xl font-black font-anton mb-1 ${!match.isHome ? "text-flyer-cyan" : "text-white"}`}>
+                                        {awayScore}
+                                      </span>
+                                      <span className="text-xs font-bold text-gray-500 uppercase">{!match.isHome ? "Galacticos" : match.opponent}</span>
+                                  </div>
+                              </div>
+
+                              <div className="border-t border-white/10 pt-4">
+                                  <p className="text-sm text-gray-400 italic mb-4">
+                                      "{(() => {
+                                          const c = commentsMap.get(match.id) || "Nessun commento disponibile per questa partita.";
+                                          return c.length > 150 ? c.substring(0, 150) + "..." : c;
+                                      })()}"
+                                      <span className="block text-flyer-cyan text-xs font-bold mt-1 not-italic uppercase tracking-wider">- Caballos P</span>
+                                  </p>
+                                  <span className="text-xs font-bold uppercase tracking-widest text-flyer-cyan flex items-center gap-2 group-hover:gap-4 transition-all">
+                                      Match Recap <ArrowRight className="w-3 h-3" />
+                                  </span>
+                              </div>
+                          </div>
+                      </Link>
+                  )}) : (
+                      <div className="col-span-full py-12 text-center text-gray-500 italic">
+                          Ancora nessuna partita giocata.
+                      </div>
+                  )}
+              </div>
+          </div>
+      </section>
+
+      {/* 
+        SHOP SECTION 
+      */}
+      <section className="relative z-30 min-h-[80vh] flex items-center border-t border-white/10 overflow-hidden group">
+          {/* Background Image with Parallax-like feel */}
+          <div className="absolute inset-0 z-0">
+               <Image 
+                   src="/assets/DSC08437.webp" 
+                   alt="Merch Background" 
+                   fill 
+                   className="object-cover transition-transform duration-[2s] group-hover:scale-105"
+                   priority
+               />
+               <div className="absolute inset-0 bg-gradient-to-r from-[#001E45] via-[#001E45]/80 to-transparent" />
+          </div>
+
+          <div className="container relative z-10 mx-auto px-6 max-w-7xl flex flex-col justify-center items-start h-full">
+               <div className="max-w-2xl animate-fade-in-up">
+                   <h2 className="text-7xl md:text-9xl font-black font-anton text-white leading-none uppercase mb-8 drop-shadow-2xl tracking-tighter">
+                       Indossa <br/>
+                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-flyer-cyan to-flyer-blue">La Maglia</span>
+                   </h2>
+                   <p className="text-xl text-gray-200 font-bold mb-10 drop-shadow-md max-w-lg">
+                       Porta i colori dei Galacticos sempre con te. 
+                       Scopri la nuova collezione ufficiale.
+                   </p>
+                   
+                   <Link href="/shop" className="group bg-white text-galacticos-dark font-black uppercase px-10 py-5 text-xl hover:bg-flyer-cyan hover:text-white transition-all duration-300 inline-flex items-center gap-3 skew-x-[-10deg] shadow-2xl hover:shadow-flyer-cyan/50">
+                       <span className="skew-x-[10deg] inline-block">Vai allo Shop</span>
+                       <ArrowRight className="w-6 h-6 transform group-hover:translate-x-1 transition-transform skew-x-[10deg]" />
+                   </Link>
+               </div>
+          </div>
+      </section>
+      
+      {/* 
+        GALLERY SECTION (MOVED TO BOTTOM)
+      */}
+      <section className="relative z-30 py-20 bg-[#001E45] border-t border-white/10">
+           <div className="container mx-auto px-6 max-w-7xl">
+               <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
+                   <h2 className="text-5xl md:text-7xl font-black font-anton uppercase text-white leading-none tracking-tight">
+                       Media <br/> Gallery
+                   </h2>
+                   <Link href="/gallery" className="hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors">
+                       Tutti gli Album <ArrowRight className="w-4 h-4" />
+                   </Link>
+               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                   {folders
+                        .filter(f => f.cover && f.cover.trim() !== "")
+                        .slice(0, 4)
+                        .map((folder, index) => { 
+                        const folderUrl = `https://drive.predanicola.it/s/i4rkc43fwrMEKB5?dir=${encodeURIComponent("/" + folder.name)}`;
+
+                        return (
+                            <a 
+                                key={index} 
+                                href={folderUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="group bg-[#001E45] border border-white/10 rounded-xl overflow-hidden shadow-lg hover:shadow-flyer-cyan/20 transition-all duration-300 flex flex-col"
+                            >
+                                <div className="h-48 relative items-center justify-center flex overflow-hidden bg-black/50">
+                                    <Image 
+                                        src={folder.cover as string} 
+                                        alt={folder.name} 
+                                        fill 
+                                        className="object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"
+                                        unoptimized
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+                                </div>
+                                <div className="p-4">
+                                     <h3 className="text-lg font-black font-anton text-white uppercase mb-1 truncate group-hover:text-flyer-cyan transition-colors">
+                                        {folder.name}
+                                    </h3>
+                                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+                                        Vedi Foto <ExternalLink className="w-3 h-3" />
+                                    </span>
+                                </div>
+                            </a>
+                        )
+                   })}
+               </div>
+           </div>
+      </section>
 
     </div>
   );

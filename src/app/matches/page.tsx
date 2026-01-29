@@ -32,7 +32,7 @@ export default async function MatchesPage() {
                 <Link href="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-4 text-xs font-bold uppercase tracking-widest">
                     <ArrowLeft className="w-4 h-4" /> Torna alla Home
                 </Link>
-                <h1 className="text-6xl md:text-8xl font-black font-anton uppercase text-white leading-none mb-4">
+                <h1 className="text-7xl md:text-9xl font-black font-anton uppercase text-white leading-none mb-4 tracking-wide">
                     Calendario <br/> <span className="text-flyer-cyan">Stagione</span>
                 </h1>
              </div>
@@ -43,7 +43,7 @@ export default async function MatchesPage() {
             {/* UPCOMING MATCHES */}
             <section className="mb-20">
                 <div className="flex items-center gap-4 mb-8">
-                     <h2 className="text-3xl font-black font-anton uppercase text-white">Prossimi Incontri</h2>
+                     <h2 className="text-4xl md:text-6xl font-black font-anton uppercase text-white tracking-wide">Prossimi Incontri</h2>
                      <div className="h-[2px] flex-1 bg-white/10" />
                 </div>
 
@@ -64,13 +64,13 @@ export default async function MatchesPage() {
                                 <div className="flex items-center justify-between gap-4">
                                     <div className={`flex-1 text-center ${match.isHome ? "order-1" : "order-3"}`}>
                                         <span className={`block font-black text-base md:text-xl uppercase leading-none ${match.isHome ? "text-flyer-cyan" : "text-white"} break-words`}>
-                                            {match.isHome ? "Galacticos" : match.opponent}
+                                            {match.isHome ? "GALACTICOS VB" : match.opponent}
                                         </span>
                                     </div>
                                     <div className="order-2 text-sm font-bold text-gray-500 italic">VS</div>
                                     <div className={`flex-1 text-center ${match.isHome ? "order-3" : "order-1"}`}>
                                          <span className={`block font-black text-base md:text-xl uppercase leading-none ${!match.isHome ? "text-flyer-cyan" : "text-white"} break-words`}>
-                                            {!match.isHome ? "Galacticos" : match.opponent}
+                                            {!match.isHome ? "GALACTICOS VB" : match.opponent}
                                         </span>
                                     </div>
                                 </div>
@@ -90,7 +90,7 @@ export default async function MatchesPage() {
              {/* PLAYED MATCHES */}
              <section>
                 <div className="flex items-center gap-4 mb-8">
-                     <h2 className="text-3xl font-black font-anton uppercase text-white">Risultati</h2>
+                     <h2 className="text-4xl md:text-6xl font-black font-anton uppercase text-white tracking-wide">Risultati</h2>
                      <div className="h-[2px] flex-1 bg-white/10" />
                 </div>
 
@@ -130,7 +130,7 @@ export default async function MatchesPage() {
                                         {/* Home Team (Always Align Right on desktop, center on mobile) */}
                                         <div className="text-center md:text-right w-full">
                                             <span className={`block font-black text-base md:text-2xl uppercase ${match.isHome ? "text-flyer-cyan" : "text-white"} break-words`}>
-                                                {match.isHome ? "Galacticos" : match.opponent}
+                                                {match.isHome ? "GALACTICOS VB" : match.opponent}
                                             </span>
                                         </div>
 
@@ -142,7 +142,7 @@ export default async function MatchesPage() {
                                         {/* Away Team (Always Align Left on desktop, center on mobile) */}
                                         <div className="text-center md:text-left w-full">
                                             <span className={`block font-black text-base md:text-2xl uppercase ${!match.isHome ? "text-flyer-cyan" : "text-white"} break-words`}>
-                                                {!match.isHome ? "Galacticos" : match.opponent}
+                                                {!match.isHome ? "GALACTICOS VB" : match.opponent}
                                             </span>
                                         </div>
                                     </div>

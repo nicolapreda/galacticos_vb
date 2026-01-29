@@ -45,9 +45,10 @@ interface MatchDetailsSectionProps {
     albumCover: string | undefined;
     albumImages?: string[];
     preMatchStats?: PreMatchStats | null;
+    comment?: string | null;
 }
 
-export default function MatchDetailsSection({ url, isPlayed, albumName, albumCover, albumImages = [], preMatchStats }: MatchDetailsSectionProps) {
+export default function MatchDetailsSection({ url, isPlayed, albumName, albumCover, albumImages = [], preMatchStats, comment }: MatchDetailsSectionProps) {
     const [details, setDetails] = useState<MatchDetails | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -75,6 +76,7 @@ export default function MatchDetailsSection({ url, isPlayed, albumName, albumCov
     }, [url, isPlayed]);
 
     if (!isPlayed) {
+         // ... (keep existing pre-match logic)
          if (preMatchStats) {
              const { galacticos, opponent, winProbability, analysisText, galacticosScorers, opponentScorers } = preMatchStats;
              
@@ -197,6 +199,29 @@ export default function MatchDetailsSection({ url, isPlayed, albumName, albumCov
 
     return (
         <div className="space-y-8 animate-fade-in">
+             {/* COMMENTO SECTION */}
+             {comment && (
+                 <div className="bg-gradient-to-r from-flyer-blue/20 to-transparent p-6 rounded border-l-4 border-flyer-cyan mb-8">
+                     <div className="flex items-center gap-4 mb-3">
+                        <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-flyer-cyan shadow-lg shadow-flyer-cyan/20">
+                            <Image 
+                                src="/assets/caballos-p.avif" 
+                                alt="Caballos P"
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+                        <h4 className="font-bold text-flyer-cyan uppercase text-sm">
+                            <span className="block text-xs text-gray-400 font-normal tracking-widest mb-0.5">L'Opinione di</span>
+                            Caballos P
+                        </h4>
+                     </div>
+                     <p className="text-gray-200 italic text-lg leading-relaxed pl-1">
+                         "{comment}"
+                     </p>
+                 </div>
+             )}
+
             {/* CSI Link (Always visible) */}
              <div className="bg-flyer-blue/20 p-4 rounded border border-flyer-blue/30 flex items-center justify-between">
                  <div>

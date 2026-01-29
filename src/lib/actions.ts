@@ -127,8 +127,35 @@ export async function updateNews(id: number, prevState: any, formData: FormData)
         return { message: "Database Error: Failed to update news." };
     }
 
-    revalidatePath("/news");
     revalidatePath("/admin/news");
     revalidatePath("/");
     redirect("/admin/news");
+}
+
+// --- MATCH COMMENTS ---
+
+export async function saveMatchComment(prevState: any, formData: FormData) {
+    const matchId = formData.get("match_id") as string;
+    const comment = formData.get("comment") as string;
+
+    if (!matchId) return { message: "Invalid Match ID" };
+
+    try {
+        const stmt = db.prepare(`
+            INSERT INTO match_comments (match_id, comment)
+            VALUES (?, ?)
+            ON CONFLICT(match_id) DO UPDATE SET
+            comment = excluded.comment,
+            updated_at = CURRENT_TIMESTAMP
+        `);
+        stmt.run(matchId, comment);
+    } catch (e) {
+        console.error("Failed to save match comment", e);
+        return { message: "Database Error: Failed to save comment." };
+    }
+
+    revalidatePath("/");
+    revalidatePath("/matches");
+    revalidatePath("/admin/matches");
+    return { message: "Comment saved successfully!" };
 }

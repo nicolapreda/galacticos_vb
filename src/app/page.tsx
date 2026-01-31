@@ -4,7 +4,7 @@ import { db, News } from "@/lib/db";
 import { getLeagueData, NextMatch } from "@/lib/scraper";
 import { ArrowRight, MapPin, Calendar, ExternalLink, Camera, ChevronRight } from "lucide-react";
 import folders from "@/data/gallery-folders.json";
-import HeroCollage from "@/components/HeroCollage";
+
 import Countdown from "@/components/Countdown";
 
 // Force dynamic rendering so scraper runs on every request
@@ -40,8 +40,18 @@ export default async function Home() {
         HERO SECTION - SWAG MODE + COUNTDOWN
       */}
       <section className="relative h-screen w-full overflow-hidden flex items-center justify-center">
-        {/* Dynamic Collage Background */}
-        <HeroCollage />
+        {/* Static Banner Background */}
+        <div className="absolute inset-0 z-0">
+            <Image 
+                src="/assets/banner.jpg" 
+                alt="Galacticos Banner" 
+                fill 
+                className="object-cover opacity-60"
+                priority
+            />
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#001E45] via-transparent to-transparent" />
+        </div>
 
         {/* Content Container */}
         <div className="relative z-10 container mx-auto px-6 h-full flex flex-col justify-center items-center text-center">
@@ -222,7 +232,7 @@ export default async function Home() {
                                           const c = commentsMap.get(match.id) || "Nessun commento disponibile per questa partita.";
                                           return c.length > 150 ? c.substring(0, 150) + "..." : c;
                                       })()}"
-                                      <span className="block text-flyer-cyan text-xs font-bold mt-1 not-italic uppercase tracking-wider">- Caballos P</span>
+                                      <span className="block text-flyer-cyan text-xs font-bold mt-1 not-italic uppercase tracking-wider">- Caballos Purosangue</span>
                                   </p>
                                   <span className="text-xs font-bold uppercase tracking-widest text-flyer-cyan flex items-center gap-2 group-hover:gap-4 transition-all">
                                       Match Recap <ArrowRight className="w-3 h-3" />

@@ -1,6 +1,8 @@
 import { getOrders } from "@/actions/shop-actions";
 import { ShoppingBag, MapPin, User, ChevronDown } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminOrdersPage() {
   const orders = await getOrders();
 

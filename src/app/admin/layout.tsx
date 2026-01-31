@@ -4,7 +4,7 @@ import AdminSidebar from "@/components/AdminSidebar";
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   async function handleSignOut() {
     "use server";
-    await signOut();
+    await signOut({ redirectTo: "/login" });
   }
 
   return (

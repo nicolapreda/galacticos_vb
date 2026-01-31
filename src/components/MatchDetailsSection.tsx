@@ -206,14 +206,14 @@ export default function MatchDetailsSection({ url, isPlayed, albumName, albumCov
                         <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-flyer-cyan shadow-lg shadow-flyer-cyan/20">
                             <Image 
                                 src="/assets/caballos-p.avif" 
-                                alt="Caballos P"
+                                alt="Caballos Purosangue"
                                 fill
                                 className="object-cover"
                             />
                         </div>
                         <h4 className="font-bold text-flyer-cyan uppercase text-sm">
                             <span className="block text-xs text-gray-400 font-normal tracking-widest mb-0.5">L'Opinione di</span>
-                            Caballos P
+                            Caballos Purosangue
                         </h4>
                      </div>
                      <p className="text-gray-200 italic text-lg leading-relaxed pl-1">

@@ -1,6 +1,7 @@
 import { db, Product } from "@/lib/db";
 import ShopClient from "@/components/ShopClient";
 import { stripe } from "@/lib/stripe";
+import { revalidatePath } from "next/cache";
 
 async function getProducts(): Promise<Product[]> {
   const stmnt = db.prepare("SELECT * FROM products");
@@ -40,6 +41,7 @@ async function verifyOrder(orderId: string) {
                     orderId
                 );
                 console.log(`Order ${orderId} confirmed and updated.`);
+                revalidatePath("/admin/orders");
             }
         } catch (e) {
             console.error("Error verifying Stripe session:", e);
@@ -47,7 +49,8 @@ async function verifyOrder(orderId: string) {
     }
 }
 
-export default async function ShopPage({ searchParams }: { searchParams: { success?: string, order_id?: string } }) {
+export default async function ShopPage(props: { searchParams: Promise<{ success?: string, order_id?: string }> }) {
+  const searchParams = await props.searchParams;
   const products = await getProducts();
   
   if (searchParams.success === 'true' && searchParams.order_id) {

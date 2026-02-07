@@ -113,7 +113,7 @@ export default function MatchDetailsSection({ url, isPlayed, albumName, albumCov
                              
                              <div className="space-y-4">
                                 <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                                    <span className="font-bold text-flyer-cyan">GALACTICOS</span>
+                                    <span className="font-bold text-flyer-cyan">GALACTICOS VB</span>
                                     <span className="text-xs text-gray-500 uppercase">Team</span>
                                     <span className="font-bold text-white uppercase truncate max-w-[100px]">{opponent?.name || "Avversario"}</span>
                                 </div>
@@ -150,7 +150,7 @@ export default function MatchDetailsSection({ url, isPlayed, albumName, albumCov
                               <div className="grid grid-cols-2 gap-8">
                                   {/* Galacticos Scorers */}
                                   <div className="bg-black/20 p-4 rounded border border-white/5">
-                                      <h6 className="text-flyer-cyan font-bold uppercase mb-4 text-sm border-b border-flyer-cyan/20 pb-2">Galacticos</h6>
+                                      <h6 className="text-flyer-cyan font-bold uppercase mb-4 text-sm border-b border-flyer-cyan/20 pb-2">Galacticos VB</h6>
                                       {galacticosScorers.length > 0 ? (
                                         <ul className="space-y-2">
                                             {galacticosScorers.map((s, i) => (
@@ -205,15 +205,15 @@ export default function MatchDetailsSection({ url, isPlayed, albumName, albumCov
                      <div className="flex items-center gap-4 mb-3">
                         <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-flyer-cyan shadow-lg shadow-flyer-cyan/20">
                             <Image 
-                                src="/assets/caballos-p.avif" 
-                                alt="Caballos Purosangue"
+                                src="/assets/caballos-purosangre.jpeg" 
+                                alt="Caballos Purasangre"
                                 fill
                                 className="object-cover"
                             />
                         </div>
                         <h4 className="font-bold text-flyer-cyan uppercase text-sm">
                             <span className="block text-xs text-gray-400 font-normal tracking-widest mb-0.5">L'Opinione di</span>
-                            Caballos Purosangue
+                            Caballos Purasangre
                         </h4>
                      </div>
                      <p className="text-gray-200 italic text-lg leading-relaxed pl-1">

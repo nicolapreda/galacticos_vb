@@ -211,7 +211,7 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
                 {/* TEAM 1 */}
                 <div className={`text-center flex-1 ${match.isHome ? "order-1" : "order-3"}`}>
                     <h2 className="text-3xl md:text-5xl font-black font-anton uppercase text-white drop-shadow-xl">
-                        {match.isHome ? "GALACTICOS" : match.opponent}
+                        {match.isHome ? "GALACTICOS VB" : match.opponent}
                     </h2>
                 </div>
 
@@ -231,7 +231,7 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
                 {/* TEAM 2 */}
                 <div className={`text-center flex-1 ${match.isHome ? "order-3" : "order-1"}`}>
                     <h2 className="text-3xl md:text-5xl font-black font-anton uppercase text-white drop-shadow-xl text-outline-white">
-                         {!match.isHome ? "GALACTICOS" : match.opponent}
+                         {!match.isHome ? "GALACTICOS VB" : match.opponent}
                     </h2>
                 </div>
             </div>

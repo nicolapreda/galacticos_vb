@@ -7,6 +7,21 @@ const PROXY_URL = process.env.CLOUDFLARE_WORKER_URL || "";
 const TEAM_NAME_CSI = "Uso Sforzatica G";
 const TEAM_NAME_DISPLAY = "GALACTICOS VB";
 
+const TEAM_LOGO_MAP: Record<string, string> = {
+    "ANNUNCIAZIONE": "/assets/loghi-squadre/annunciazione.png",
+    "GHEZZI ANYMORE": "/assets/loghi-squadre/anymore-ghezzi.png",
+    "BASELLA INNOVA": "/assets/loghi-squadre/basella-innova.png",
+    "ASD CALVENZANO": "/assets/loghi-squadre/calvenzano.png",
+    "CALVENZANO": "/assets/loghi-squadre/calvenzano.png",
+    "CARNOVALI B": "/assets/loghi-squadre/carnovali.png",
+    "CERRETO": "/assets/loghi-squadre/cerreto.png",
+    "MAPI FC": "/assets/loghi-squadre/mapi.png",
+    "PARIS SAINT GIUAN": "/assets/loghi-squadre/paris-saint-giuan.png",
+    "RONCOLA OVER 57": "/assets/loghi-squadre/roncola.png",
+    "SANTA LUCIA": "/assets/loghi-squadre/santa-lucia.png",
+    "FARESE": "/assets/loghi-squadre/farese.png",
+};
+
 export interface LeagueStanding {
     rank: number;
     team: string;
@@ -126,7 +141,26 @@ async function scrapeLeagueDataInternal(): Promise<LeagueData> {
                 }
             }
 
-            // Rename team and use local logo
+            // Check for local transparent logo override
+            const normalizedTeam = team.toUpperCase().trim();
+            // Check various partial matches if exact match fails
+            let localLogo = TEAM_LOGO_MAP[normalizedTeam];
+
+            // Try partial matches if exact not found
+            if (!localLogo) {
+                for (const [key, value] of Object.entries(TEAM_LOGO_MAP)) {
+                    if (normalizedTeam.includes(key) || key.includes(normalizedTeam)) {
+                        localLogo = value;
+                        break;
+                    }
+                }
+            }
+
+            if (localLogo) {
+                logo = localLogo;
+            }
+
+            // Rename team and use local logo for Galacticos
             if (team === TEAM_NAME_CSI) {
                 team = TEAM_NAME_DISPLAY;
                 logo = "/assets/logo.webp";
@@ -196,6 +230,9 @@ async function scrapeLeagueDataInternal(): Promise<LeagueData> {
 
             let location = $(el).attr("data-bs-title") || "";
             location = location.replace(/\(\d+.*?\)$/, "").trim();
+            if (location.includes("P.Za S.Maria D Oleno") || location.includes("Or.S.Maria")) {
+                location = "Caravella Santa Maria Arena";
+            }
 
             // Extract Result
             // New structure: <div class="d-flex flex-column"><span><span class="text-secondary-400">2</span></span>...</div>

@@ -32,7 +32,7 @@
   {
     "number": 17,
     "name": "Riccardo Pozzi",
-    "role": "Centrocampista",
+    "role": "Difensore",
     "image": "/assets/squadra/riccardo-pozzi.webp"
   },
   {
@@ -48,7 +48,7 @@
     "image": "/assets/squadra/alessandro-animamia.webp"
   },
   {
-    "number": 7,
+    "number": 8,
     "name": "Luca Spinedi",
     "role": "Centrocampista",
     "image": "/assets/squadra/luca-spinedi.webp"
@@ -60,19 +60,19 @@
     "image": "/assets/squadra/davide-cancelli.webp"
   },
   {
-    "number": 12,
+    "number": 20,
     "name": "Mirko Parimbelli",
-    "role": "Difensore",
+    "role": "Centrocampista",
     "image": "/assets/squadra/mirko-parimbelli.webp"
   },
   {
-    "number": 13,
+    "number": 9,
     "name": "Andrea Belotti",
     "role": "Attaccante",
     "image": "/assets/squadra/andrea-belotti.webp"
   },
   {
-    "number": 14,
+    "number": 18,
     "name": "Andrea Nicoli",
     "role": "Attaccante",
     "image": "/assets/squadra/andrea-nicoli.webp"
@@ -80,7 +80,7 @@
   {
     "number": 0,
     "name": "Nicola Preda",
-    "role": "Staff",
+    "role": "Addetto Stampa",
     "image": "/assets/squadra/nicola-preda.webp"
   },
   {
@@ -92,7 +92,7 @@
   {
     "number": 0,
     "name": "Enrico Valoti",
-    "role": "Staff",
+    "role": "Allenatore",
     "image": "/assets/squadra/enrico-valoti.webp"
   },
   {
@@ -104,7 +104,7 @@
   {
     "number": 0,
     "name": "Benedetta Petrò",
-    "role": "Staff",
+    "role": "Medico",
     "image": "/assets/squadra/benedetta-petr.webp"
   }
 ]

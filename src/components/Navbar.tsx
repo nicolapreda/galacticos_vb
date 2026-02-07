@@ -21,7 +21,7 @@ export default function Navbar() {
   }, [isOpen]);
 
   const navLinks = [
-    { href: "/gallery", label: "MEDIA GALLERY" },
+    { href: "/results", label: "ULTIMI MATCH" },
     { href: "/roster", label: "SQUADRA" },
     { href: "/", label: "HOME", primary: true },
     { href: "/matches", label: "CALENDARIO" },
@@ -135,11 +135,11 @@ export default function Navbar() {
         {/* Menu Links - Centered and Large */}
         <div className="flex flex-col items-center justify-center space-y-8 px-6 w-full">
           <Link
-            href="/gallery"
+            href="/results"
             className="text-white hover:text-flyer-cyan font-black font-anton uppercase tracking-widest text-4xl transition-all hover:scale-110 transform"
             onClick={() => setIsOpen(false)}
           >
-            Media Gallery
+            Ultimi Match
           </Link>
           <Link
             href="/roster"
@@ -147,6 +147,13 @@ export default function Navbar() {
             onClick={() => setIsOpen(false)}
           >
             Squadra
+          </Link>
+          <Link
+            href="/matches#latest-matches"
+             className="text-white hover:text-flyer-cyan font-black font-anton uppercase tracking-widest text-4xl transition-all hover:scale-110 transform"
+             onClick={() => setIsOpen(false)}
+          >
+             Ultimi Match
           </Link>
           <Link
             href="/"

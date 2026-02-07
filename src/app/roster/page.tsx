@@ -11,7 +11,7 @@ export default function RosterPage() {
     { title: "Attaccanti", role: "Attaccante" },
   ];
 
-  const staffRoles = ["Staff", "Dirigente Sportivo", "Allenatore", "Presidente", "Vicepresidente"];
+  const staffRoles = ["Staff", "Dirigente Sportivo", "Allenatore", "Presidente", "Vicepresidente", "Addetto Stampa", "Medico"];
   
   const staff = playersData
     .filter(p => staffRoles.includes(p.role) || p.number === 0);
@@ -50,15 +50,16 @@ export default function RosterPage() {
                   <div className="h-px bg-white/20 w-16 md:w-32 ml-4 md:ml-8"></div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
+                <div className="flex flex-wrap justify-center gap-4 md:gap-6">
                   {playersInGroup.map((player) => (
-                    <PlayerCard
-                      key={`${player.number}-${player.name}`}
-                      number={player.number}
-                      name={player.name}
-                      role={player.role}
-                      image={player.image}
-                    />
+                    <div key={`${player.number}-${player.name}`} className="w-[calc(50%-0.5rem)] md:w-[calc(25%-1rem)] lg:w-[calc(16.666%-1rem)]">
+                      <PlayerCard
+                        number={player.number}
+                        name={player.name}
+                        role={player.role}
+                        image={player.image}
+                      />
+                    </div>
                   ))}
                 </div>
              </section>
@@ -76,16 +77,17 @@ export default function RosterPage() {
               <div className="h-px bg-white/20 w-32 ml-8"></div>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
               {staff.map((member) => (
-                <PlayerCard
-                  key={`staff-${member.name}`}
-                  number={member.number}
-                  name={member.name}
-                  role={member.role}
-                  image={member.image}
-                  isStaff={true}
-                />
+                <div key={`staff-${member.name}`} className="w-[calc(50%-0.5rem)] md:w-[calc(25%-1rem)] lg:w-[calc(16.666%-1rem)]">
+                  <PlayerCard
+                    number={member.number}
+                    name={member.name}
+                    role={member.role}
+                    image={member.image}
+                    isStaff={true}
+                  />
+                </div>
               ))}
             </div>
           </section>

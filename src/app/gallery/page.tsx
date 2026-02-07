@@ -1,10 +1,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import folders from "@/data/gallery-folders.json";
-import { Folder, ExternalLink, Camera } from "lucide-react";
+import { Folder, ExternalLink } from "lucide-react";
+import { getLeagueData } from "@/lib/scraper";
 
-export default function GalleryPage() {
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
+export default async function GalleryPage() {
   const DRIVE_BASE_URL = "https://drive.predanicola.it/s/i4rkc43fwrMEKB5?path=";
+  const { matches } = await getLeagueData();
 
   return (
     <div className="bg-[#001E45] min-h-screen pt-32 pb-20 text-white">
@@ -27,7 +32,57 @@ export default function GalleryPage() {
             {folders
                 .filter(f => f.cover && f.cover.trim() !== "")
                 .map((folder, index) => {
-                // Encode folder name for URL
+                // Match Name Parsing
+                let displayName = folder.name;
+                
+                try {
+                    // Start with basic parsing
+                    const parts = folder.name.split(" - ");
+                    if (parts.length >= 2) {
+                        const datePart = parts[0].trim(); // "4.10"
+                        const teamPart = parts[1].trim(); // "GHEZZI ANYMORE"
+
+                        const [day, month] = datePart.split(".").map(Number);
+                        // Assuming year 2025/2026 based on month? 
+                        // Season starts Sept 2025. Jan-Feb 2026.
+                        // Simple guessing: if month > 8 -> 2025, else 2026.
+                        const year = month > 8 ? 2025 : 2026;
+                        
+                        const fullDate = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+
+                        // Title case
+                        const titleCaseTeam = teamPart
+                            .toLowerCase()
+                            .split(' ')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
+                        
+                        // Default fallback
+                        displayName = `Galacticos VB - ${titleCaseTeam} - ${fullDate}`;
+
+                        // Try to find exact match in scraped data to determine Home/Away
+                        if (matches) {
+                            // Find match with same day/month/year
+                            const match = matches.find(m => {
+                                const d = new Date(m.date.split("/").reverse().join("-")); // DD/MM/YYYY -> YYYY-MM-DD
+                                // Actually m.date is "DD/MM/YYYY" string
+                                const [mDay, mMonth, mYear] = m.date.split("/").map(Number);
+                                return mDay === day && mMonth === month && mYear === year;
+                            });
+
+                            if (match) {
+                                // Found match! Use correct Home - Away format
+                                const home = match.isHome ? "GALACTICOS VB" : match.opponent;
+                                const away = match.isHome ? match.opponent : "GALACTICOS VB";
+                                displayName = `${home} - ${away} - ${fullDate}`;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error("Error parsing folder name:", folder.name, e);
+                }
+
+                // Restore folderUrl definition
                 const folderUrl = `${DRIVE_BASE_URL.replace("?path=", "?dir=")}${encodeURIComponent("/" + folder.name)}`;
                 
                 return (
@@ -58,8 +113,8 @@ export default function GalleryPage() {
                         {/* Content */}
                         <div className="p-6 flex-1 flex flex-col justify-between">
                             <div>
-                                <h3 className="text-xl font-black font-anton text-white uppercase mb-2 group-hover:text-flyer-cyan transition-colors">
-                                    {folder.name}
+                                <h3 className="text-xl font-black font-anton text-white uppercase mb-2 group-hover:text-flyer-cyan transition-colors leading-tight">
+                                    {displayName}
                                 </h3>
                                 <p className="text-sm text-gray-400 font-medium flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-flyer-cyan inline-block"></span>

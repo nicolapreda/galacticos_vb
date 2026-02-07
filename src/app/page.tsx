@@ -2,8 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { db, News } from "@/lib/db";
 import { getLeagueData, NextMatch } from "@/lib/scraper";
-import { ArrowRight, MapPin, Calendar, ExternalLink, Camera, ChevronRight } from "lucide-react";
-import folders from "@/data/gallery-folders.json";
+import { ArrowRight } from "lucide-react";
 
 import Countdown from "@/components/Countdown";
 
@@ -68,14 +67,17 @@ export default async function Home() {
 
                 {/* COUNTDOWN OVERLAY */}
                 {nextMatch && (
-                  <div className="mb-10 w-full max-w-4xl bg-black/40 backdrop-blur-md border-y border-white/10 py-6 px-4 md:px-12 transform -skew-x-12">
+                  <Link 
+                    href={`/matches/${nextMatchId || ''}`}
+                    className="block mb-10 w-full max-w-4xl bg-black/40 backdrop-blur-md border-y border-white/10 py-6 px-4 md:px-12 transform -skew-x-12 hover:bg-black/60 transition-all cursor-pointer group"
+                  >
                      <div className="skew-x-[12deg]">
-                        <p className="text-flyer-cyan uppercase tracking-widest text-sm font-bold mb-4 text-center">
-                            Prossimo Match: {nextMatch.opponent}
+                        <p className="text-flyer-cyan uppercase tracking-widest text-sm font-bold mb-4 text-center group-hover:text-white transition-colors">
+                            Prossimo Match: {nextMatch.opponent} <span className="inline-block ml-2 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                         </p>
                         <Countdown targetDate={`${nextMatch.date} ${nextMatch.time}`} />
                      </div>
-                  </div>
+                  </Link>
                 )}
                 
 
@@ -155,8 +157,8 @@ export default async function Home() {
                                                         <div className="w-full h-full bg-white/10 rounded-full" />
                                                     )}
                                                 </div>
-                                                <span className={`${isGalacticos ? "text-flyer-cyan text-lg uppercase tracking-wider" : "text-white"} font-bold`}>
-                                                    {team.team}
+                                                <span className={`${isGalacticos ? "text-flyer-cyan text-lg tracking-wider font-black" : "text-white font-bold"} uppercase`}>
+                                                    {isGalacticos ? "Galacticos VB" : team.team}
                                                 </span>
                                             </div>
                                         </td>
@@ -177,6 +179,43 @@ export default async function Home() {
                 </div>
             </div>
         </div>
+      </section>
+
+
+
+      {/* 
+        SHOP SECTION 
+      */}
+      <section className="relative z-30 min-h-[80vh] flex items-center border-t border-white/10 overflow-hidden group">
+          {/* Background Image with Parallax-like feel */}
+          <div className="absolute inset-0 z-0">
+               <Image 
+                   src="/assets/DSC08437.webp" 
+                   alt="Merch Background" 
+                   fill 
+                   className="object-cover transition-transform duration-[2s] group-hover:scale-105"
+                   priority
+               />
+               <div className="absolute inset-0 bg-gradient-to-r from-[#001E45] via-[#001E45]/80 to-transparent" />
+          </div>
+
+          <div className="container relative z-10 mx-auto px-6 max-w-7xl flex flex-col justify-center items-start h-full">
+               <div className="max-w-2xl animate-fade-in-up">
+                   <h2 className="text-7xl md:text-9xl font-black font-anton text-white leading-none uppercase mb-8 drop-shadow-2xl tracking-wide">
+                       Indossa <br/>
+                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-flyer-cyan to-flyer-blue">La Maglia</span>
+                   </h2>
+                   <p className="text-xl text-gray-200 font-bold mb-10 drop-shadow-md max-w-lg">
+                       Porta i colori dei Galacticos sempre con te. 
+                       Scopri la nuova collezione ufficiale.
+                   </p>
+                   
+                   <Link href="/shop" className="group bg-white text-galacticos-dark font-black uppercase px-10 py-5 text-xl hover:bg-flyer-cyan hover:text-white transition-all duration-300 inline-flex items-center gap-3 skew-x-[-10deg] shadow-2xl hover:shadow-flyer-cyan/50">
+                       <span className="skew-x-[10deg] inline-block">Vai allo Shop</span>
+                       <ArrowRight className="w-6 h-6 transform group-hover:translate-x-1 transition-transform skew-x-[10deg]" />
+                   </Link>
+               </div>
+          </div>
       </section>
 
       {/* 
@@ -215,14 +254,14 @@ export default async function Home() {
                                       <span className={`block text-3xl font-black font-anton mb-1 ${match.isHome ? "text-flyer-cyan" : "text-white"}`}>
                                         {homeScore}
                                       </span>
-                                      <span className="text-xs font-bold text-gray-500 uppercase">{match.isHome ? "Galacticos" : match.opponent}</span>
+                                      <span className="text-xs font-bold text-gray-500 uppercase">{match.isHome ? "GALACTICOS VB" : match.opponent}</span>
                                   </div>
                                   <div className="text-2xl font-black text-white/20">-</div>
                                   <div className="text-center">
                                       <span className={`block text-3xl font-black font-anton mb-1 ${!match.isHome ? "text-flyer-cyan" : "text-white"}`}>
                                         {awayScore}
                                       </span>
-                                      <span className="text-xs font-bold text-gray-500 uppercase">{!match.isHome ? "Galacticos" : match.opponent}</span>
+                                      <span className="text-xs font-bold text-gray-500 uppercase">{!match.isHome ? "GALACTICOS VB" : match.opponent}</span>
                                   </div>
                               </div>
 
@@ -232,7 +271,7 @@ export default async function Home() {
                                           const c = commentsMap.get(match.id) || "Nessun commento disponibile per questa partita.";
                                           return c.length > 150 ? c.substring(0, 150) + "..." : c;
                                       })()}"
-                                      <span className="block text-flyer-cyan text-xs font-bold mt-1 not-italic uppercase tracking-wider">- Caballos Purosangue</span>
+                                      <span className="block text-flyer-cyan text-xs font-bold mt-1 not-italic uppercase tracking-wider">- Caballos Purasangre</span>
                                   </p>
                                   <span className="text-xs font-bold uppercase tracking-widest text-flyer-cyan flex items-center gap-2 group-hover:gap-4 transition-all">
                                       Match Recap <ArrowRight className="w-3 h-3" />
@@ -248,95 +287,8 @@ export default async function Home() {
               </div>
           </div>
       </section>
-
-      {/* 
-        SHOP SECTION 
-      */}
-      <section className="relative z-30 min-h-[80vh] flex items-center border-t border-white/10 overflow-hidden group">
-          {/* Background Image with Parallax-like feel */}
-          <div className="absolute inset-0 z-0">
-               <Image 
-                   src="/assets/DSC08437.webp" 
-                   alt="Merch Background" 
-                   fill 
-                   className="object-cover transition-transform duration-[2s] group-hover:scale-105"
-                   priority
-               />
-               <div className="absolute inset-0 bg-gradient-to-r from-[#001E45] via-[#001E45]/80 to-transparent" />
-          </div>
-
-          <div className="container relative z-10 mx-auto px-6 max-w-7xl flex flex-col justify-center items-start h-full">
-               <div className="max-w-2xl animate-fade-in-up">
-                   <h2 className="text-7xl md:text-9xl font-black font-anton text-white leading-none uppercase mb-8 drop-shadow-2xl tracking-tighter">
-                       Indossa <br/>
-                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-flyer-cyan to-flyer-blue">La Maglia</span>
-                   </h2>
-                   <p className="text-xl text-gray-200 font-bold mb-10 drop-shadow-md max-w-lg">
-                       Porta i colori dei Galacticos sempre con te. 
-                       Scopri la nuova collezione ufficiale.
-                   </p>
-                   
-                   <Link href="/shop" className="group bg-white text-galacticos-dark font-black uppercase px-10 py-5 text-xl hover:bg-flyer-cyan hover:text-white transition-all duration-300 inline-flex items-center gap-3 skew-x-[-10deg] shadow-2xl hover:shadow-flyer-cyan/50">
-                       <span className="skew-x-[10deg] inline-block">Vai allo Shop</span>
-                       <ArrowRight className="w-6 h-6 transform group-hover:translate-x-1 transition-transform skew-x-[10deg]" />
-                   </Link>
-               </div>
-          </div>
-      </section>
       
-      {/* 
-        GALLERY SECTION (MOVED TO BOTTOM)
-      */}
-      <section className="relative z-30 py-20 bg-[#001E45] border-t border-white/10">
-           <div className="container mx-auto px-6 max-w-7xl">
-               <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
-                   <h2 className="text-5xl md:text-7xl font-black font-anton uppercase text-white leading-none tracking-tight">
-                       Media <br/> Gallery
-                   </h2>
-                   <Link href="/gallery" className="hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors">
-                       Tutti gli Album <ArrowRight className="w-4 h-4" />
-                   </Link>
-               </div>
 
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                   {folders
-                        .filter(f => f.cover && f.cover.trim() !== "")
-                        .slice(0, 4)
-                        .map((folder, index) => { 
-                        const folderUrl = `https://drive.predanicola.it/s/i4rkc43fwrMEKB5?dir=${encodeURIComponent("/" + folder.name)}`;
-
-                        return (
-                            <a 
-                                key={index} 
-                                href={folderUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="group bg-[#001E45] border border-white/10 rounded-xl overflow-hidden shadow-lg hover:shadow-flyer-cyan/20 transition-all duration-300 flex flex-col"
-                            >
-                                <div className="h-48 relative items-center justify-center flex overflow-hidden bg-black/50">
-                                    <Image 
-                                        src={folder.cover as string} 
-                                        alt={folder.name} 
-                                        fill 
-                                        className="object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"
-                                        unoptimized
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
-                                </div>
-                                <div className="p-4">
-                                     <h3 className="text-lg font-black font-anton text-white uppercase mb-1 truncate group-hover:text-flyer-cyan transition-colors">
-                                        {folder.name}
-                                    </h3>
-                                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2">
-                                        Vedi Foto <ExternalLink className="w-3 h-3" />
-                                    </span>
-                                </div>
-                            </a>
-                        )
-                   })}
-               </div>
-           </div>
-      </section>
 
     </div>
   );

@@ -1,62 +1,53 @@
-import Database from 'better-sqlite3';
-import path from 'path';
+import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
 
-// Initialize the database connection
-// In development, we want to preserve the connection across hot reloads if possible, 
-// but simplified approach is acceptable for SQLite.
-const dbPath = path.resolve(process.cwd(), 'database.sqlite');
+dotenv.config();
 
-export const db = new Database(dbPath);
+const MYSQL_HOST = process.env.MYSQL_HOST || 'localhost';
+const MYSQL_PORT = process.env.MYSQL_PORT ? Number(process.env.MYSQL_PORT) : 3306;
+const MYSQL_USER = process.env.MYSQL_USER || 'root';
+const MYSQL_PASSWORD = process.env.MYSQL_PASSWORD || '';
+const MYSQL_DATABASE = process.env.MYSQL_DATABASE || 'predanicola_db';
 
-// Enable WAL mode for better concurrency
-db.pragma('journal_mode = WAL');
+const pool = mysql.createPool({
+    host: MYSQL_HOST,
+    port: MYSQL_PORT,
+    user: MYSQL_USER,
+    password: MYSQL_PASSWORD,
+    database: MYSQL_DATABASE,
+    waitForConnections: true,
+    connectionLimit: 10,
+    charset: 'utf8mb4',
+});
 
-// Ensure tables exist
-db.exec(`
-    CREATE TABLE IF NOT EXISTS news (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        content TEXT NOT NULL,
-        image TEXT,
-        date TEXT NOT NULL,
-        category TEXT DEFAULT 'News'
-    );
-
-    CREATE TABLE IF NOT EXISTS match_comments (
-        match_id TEXT PRIMARY KEY,
-        comment TEXT NOT NULL,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS products (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        description TEXT NOT NULL,
-        price REAL NOT NULL,
-        image TEXT,
-        stock INTEGER DEFAULT 0
-    );
-    CREATE TABLE IF NOT EXISTS orders (
-        id TEXT PRIMARY KEY,
-        customer_email TEXT,
-        customer_name TEXT,
-        shipping_address TEXT,
-        total_amount REAL NOT NULL,
-        status TEXT DEFAULT 'pending', 
-        stripe_session_id TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS order_items (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        order_id TEXT NOT NULL,
-        product_name TEXT NOT NULL,
-        quantity INTEGER NOT NULL,
-        price REAL NOT NULL,
-        size TEXT,
-        FOREIGN KEY(order_id) REFERENCES orders(id)
-    );
-`);
+// Minimal drop-in wrapper to emulate better-sqlite3 prepare().all/get/run API
+export const db = {
+    prepare(sql: string) {
+        return {
+            all: async (...params: any[]) => {
+                const [rows] = await pool.execute(sql, params);
+                return rows;
+            },
+            get: async (...params: any[]) => {
+                const [rows] = await pool.execute(sql, params);
+                const arr = rows as any[];
+                return arr[0];
+            },
+            run: async (...params: any[]) => {
+                const [result] = await pool.execute(sql, params);
+                return result;
+            },
+        };
+    },
+    async exec(sql: string) {
+        await pool.query(sql);
+    },
+    // direct query helper
+    async query(sql: string, params?: any[]) {
+        const [rows] = await pool.execute(sql, params || []);
+        return rows;
+    },
+};
 
 export interface News {
     id: number;

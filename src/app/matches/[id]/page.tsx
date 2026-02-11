@@ -68,8 +68,8 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
 
   const album = findGalleryAlbum(match);
 
-  // Fetch Comment
-  const commentRecord = db.prepare("SELECT comment FROM match_comments WHERE match_id = ?").get(match.id) as { comment: string } | undefined;
+    // Fetch Comment
+    const commentRecord = await db.prepare("SELECT comment FROM match_comments WHERE match_id = ?").get(match.id) as { comment: string } | undefined;
 
   // Background Image (Random or based on status)
   const bgImage = isPlayed ? "/assets/DSC08466.webp" : "/assets/DSC08437.webp";

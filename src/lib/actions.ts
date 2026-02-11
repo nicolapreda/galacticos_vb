@@ -60,7 +60,7 @@ export async function createNews(prevState: any, formData: FormData) {
             INSERT INTO news (title, date, content, image)
             VALUES (?, ?, ?, ?)
         `);
-        stmt.run(title, date, content, imagePath);
+        await stmt.run(title, date, content, imagePath);
     } catch (e) {
         return { message: "Database Error: Failed to create news." };
     }
@@ -74,7 +74,7 @@ export async function createNews(prevState: any, formData: FormData) {
 export async function deleteNews(id: number) {
     try {
         const stmt = db.prepare("DELETE FROM news WHERE id = ?");
-        stmt.run(id);
+        await stmt.run(id);
         revalidatePath("/news");
         revalidatePath("/admin/news");
         revalidatePath("/");
@@ -115,14 +115,14 @@ export async function updateNews(id: number, prevState: any, formData: FormData)
                 SET title = ?, date = ?, category = ?, content = ?, image = ?
                 WHERE id = ?
             `);
-            stmt.run(title, date, category, content, imagePath, id);
+            await stmt.run(title, date, category, content, imagePath, id);
         } else {
             const stmt = db.prepare(`
                 UPDATE news 
                 SET title = ?, date = ?, category = ?, content = ?
                 WHERE id = ?
             `);
-            stmt.run(title, date, category, content, id);
+            await stmt.run(title, date, category, content, id);
         }
     } catch (e) {
         return { message: "Database Error: Failed to update news." };
@@ -142,14 +142,13 @@ export async function saveMatchComment(prevState: any, formData: FormData) {
     if (!matchId) return { message: "Invalid Match ID" };
 
     try {
+        // MySQL upsert equivalent (requires match_id to be PRIMARY KEY)
         const stmt = db.prepare(`
-            INSERT INTO match_comments (match_id, comment)
-            VALUES (?, ?)
-            ON CONFLICT(match_id) DO UPDATE SET
-            comment = excluded.comment,
-            updated_at = CURRENT_TIMESTAMP
+            INSERT INTO match_comments (match_id, comment, updated_at)
+            VALUES (?, ?, CURRENT_TIMESTAMP)
+            ON DUPLICATE KEY UPDATE comment = VALUES(comment), updated_at = CURRENT_TIMESTAMP
         `);
-        stmt.run(matchId, comment);
+        await stmt.run(matchId, comment);
     } catch (e) {
         console.error("Failed to save match comment", e);
         return { message: "Database Error: Failed to save comment." };

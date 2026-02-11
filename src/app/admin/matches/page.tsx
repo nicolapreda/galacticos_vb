@@ -10,7 +10,7 @@ export default async function AdminMatchesPage() {
     const playedMatches = matches.filter(m => m.played).reverse(); // Show most recent first
 
     // Fetch Comments
-    const comments = db.prepare("SELECT * FROM match_comments").all() as { match_id: string, comment: string }[];
+    const comments = await db.prepare("SELECT * FROM match_comments").all() as { match_id: string, comment: string }[];
     const commentsMap = new Map(comments.map(c => [c.match_id, c.comment]));
 
     return (

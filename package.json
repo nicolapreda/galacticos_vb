@@ -4,15 +4,18 @@
   "description": "Galacticos Vele Blu - Official Website (Next.js)",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3002",
+    "dev": "next dev -p 3003",
+    "init-mysql": "node scripts/init-mysql.js",
+    "migrate-sqlite": "node scripts/migrate-sqlite-to-mysql.js",
     "build": "next build",
-    "start": "next start -p 3002",
+    "start": "next start -p 3003",
     "lint": "eslint",
     "sync-gallery": "node scripts/sync-gallery.js"
   },
   "dependencies": {
     "@stripe/stripe-js": "^8.7.0",
     "better-sqlite3": "^12.6.2",
+    "mysql2": "^3.3.2",
     "cheerio": "^1.2.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.563.0",

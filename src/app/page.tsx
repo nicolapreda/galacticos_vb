@@ -29,7 +29,7 @@ export default async function Home() {
 
   // Fetch comments for these matches
   const matchIds = latestMatches.map(m => m.id);
-  const comments = matchIds.length > 0 ? db.prepare(`SELECT * FROM match_comments WHERE match_id IN (${matchIds.map(() => '?').join(',')})`).all(...matchIds) as { match_id: string, comment: string }[] : [];
+    const comments = matchIds.length > 0 ? await db.prepare(`SELECT * FROM match_comments WHERE match_id IN (${matchIds.map(() => '?').join(',')})`).all(...matchIds) as { match_id: string, comment: string }[] : [];
   const commentsMap = new Map(comments.map(c => [c.match_id, c.comment]));
 
   return (

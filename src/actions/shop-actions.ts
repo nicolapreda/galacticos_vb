@@ -6,11 +6,11 @@ import { revalidatePath } from "next/cache";
 // --- PRODUCTS ---
 
 export async function getProducts(): Promise<Product[]> {
-    return db.prepare("SELECT * FROM products ORDER BY id DESC").all() as Product[];
+    return await db.prepare("SELECT * FROM products ORDER BY id DESC").all() as Product[];
 }
 
 export async function getProduct(id: number): Promise<Product | undefined> {
-    return db.prepare("SELECT * FROM products WHERE id = ?").get(id) as Product | undefined;
+    return await db.prepare("SELECT * FROM products WHERE id = ?").get(id) as Product | undefined;
 }
 
 import { saveFile } from "@/lib/upload";
@@ -27,12 +27,12 @@ export async function createProduct(formData: FormData) {
         image = await saveFile(imageFile);
     }
 
-    const stmt = db.prepare(`
+        const stmt = db.prepare(`
     INSERT INTO products (name, description, price, image, stock)
     VALUES (?, ?, ?, ?, ?)
   `);
 
-    stmt.run(name, description, isNaN(price) ? 0 : price, image, isNaN(stock) ? 0 : stock);
+        await stmt.run(name, description, isNaN(price) ? 0 : price, image, isNaN(stock) ? 0 : stock);
     revalidatePath("/shop");
     revalidatePath("/admin/shop");
 }
@@ -59,14 +59,14 @@ export async function updateProduct(id: number, formData: FormData) {
     WHERE id = ?
   `);
 
-    stmt.run(name, description, isNaN(price) ? 0 : price, image, isNaN(stock) ? 0 : stock, id);
+        await stmt.run(name, description, isNaN(price) ? 0 : price, image, isNaN(stock) ? 0 : stock, id);
     revalidatePath("/shop");
     revalidatePath(`/shop/${id}`);
     revalidatePath("/admin/shop");
 }
 
 export async function deleteProduct(id: number) {
-    db.prepare("DELETE FROM products WHERE id = ?").run(id);
+        await db.prepare("DELETE FROM products WHERE id = ?").run(id);
     revalidatePath("/shop");
     revalidatePath("/admin/shop");
 }
@@ -78,14 +78,14 @@ export interface OrderWithItems extends Order {
 }
 
 export async function getOrders(): Promise<OrderWithItems[]> {
-    const orders = db.prepare("SELECT * FROM orders ORDER BY created_at DESC").all() as Order[];
+    const orders = await db.prepare("SELECT * FROM orders ORDER BY created_at DESC").all() as Order[];
 
     // Fetch items for each order (efficient enough for expected volume)
-    // Could accept a JOIN query but manual mapping is simpler for typing right now
-    const ordersWithItems = orders.map(order => {
-        const items = db.prepare("SELECT * FROM order_items WHERE order_id = ?").all(order.id) as OrderItem[];
-        return { ...order, items };
-    });
+    const ordersWithItems: OrderWithItems[] = [];
+    for (const order of orders) {
+        const items = await db.prepare("SELECT * FROM order_items WHERE order_id = ?").all(order.id) as OrderItem[];
+        ordersWithItems.push({ ...order, items });
+    }
 
     return ordersWithItems;
 }

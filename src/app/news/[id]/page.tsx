@@ -14,12 +14,12 @@ interface Comment {
 
 async function getNews(id: string): Promise<News | undefined> {
   const stmnt = db.prepare("SELECT * FROM news WHERE id = ?");
-  return stmnt.get(id) as News | undefined;
+  return await stmnt.get(id) as News | undefined;
 }
 
 async function getComments(newsId: string): Promise<Comment[]> {
   const stmnt = db.prepare("SELECT * FROM comments WHERE news_id = ? ORDER BY date DESC");
-  return stmnt.all(newsId) as Comment[];
+  return await stmnt.all(newsId) as Comment[];
 }
 
 export default async function NewsDetailPage({ params }: { params: Promise<{ id: string }> }) {

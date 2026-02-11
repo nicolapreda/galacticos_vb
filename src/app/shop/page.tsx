@@ -1,19 +1,19 @@
 import { db, Product } from "@/lib/db";
 import ShopClient from "@/components/ShopClient";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { revalidatePath } from "next/cache";
 
 async function getProducts(): Promise<Product[]> {
-  const stmnt = db.prepare("SELECT * FROM products");
-  return stmnt.all() as Product[];
+    const stmnt = db.prepare("SELECT * FROM products");
+    return await stmnt.all() as Product[];
 }
 
 async function verifyOrder(orderId: string) {
-    const order = db.prepare("SELECT * FROM orders WHERE id = ?").get(orderId) as any;
+        const order = await db.prepare("SELECT * FROM orders WHERE id = ?").get(orderId) as any;
     
     if (order && order.status === 'pending' && order.stripe_session_id) {
         try {
-            const session = await stripe.checkout.sessions.retrieve(order.stripe_session_id);
+            const session = await getStripe().checkout.sessions.retrieve(order.stripe_session_id);
             if (session.payment_status === 'paid') {
                 const customerDetails = session.customer_details;
                 const shipping = customerDetails?.address;
@@ -27,7 +27,7 @@ async function verifyOrder(orderId: string) {
                     state: shipping?.state,
                 });
 
-                db.prepare(`
+                await db.prepare(`
                     UPDATE orders 
                     SET status = 'paid', 
                         customer_name = ?, 

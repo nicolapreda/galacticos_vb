@@ -5,7 +5,7 @@ import { Plus, Trash2, Edit } from "lucide-react";
 import Image from "next/image";
 
 async function getNews() {
-    const news = db.prepare("SELECT * FROM news ORDER BY date DESC").all() as News[];
+    const news = await db.prepare("SELECT * FROM news ORDER BY date DESC").all() as News[];
     return news;
 }
 

@@ -6,7 +6,7 @@ import EditNewsForm from "./form"; // We'll extract the form to a client compone
 
 export default async function EditNewsPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    const news = db.prepare("SELECT * FROM news WHERE id = ?").get(id) as News | undefined;
+    const news = await db.prepare("SELECT * FROM news WHERE id = ?").get(id) as News | undefined;
 
     if (!news) {
         notFound();

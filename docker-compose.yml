@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  nextjs:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+    image: galacticosvb-nextjs
+    container_name: galacticosvb
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    environment:
+      - AUTH_TRUST_HOST=true
+      - AUTH_URL=https://galacticosvb.it
+    networks:
+      - nginx
+
+networks:
+  nginx:
+    name: nginx_network
+    external: true

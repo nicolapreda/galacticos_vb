@@ -149,13 +149,6 @@ export default function Navbar() {
             Squadra
           </Link>
           <Link
-            href="/matches#latest-matches"
-             className="text-white hover:text-flyer-cyan font-black font-anton uppercase tracking-widest text-4xl transition-all hover:scale-110 transform"
-             onClick={() => setIsOpen(false)}
-          >
-             Ultimi Match
-          </Link>
-          <Link
             href="/"
             className="text-flyer-cyan hover:text-white font-black font-anton uppercase tracking-widest text-5xl transition-all hover:scale-110 transform"
             onClick={() => setIsOpen(false)}

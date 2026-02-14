@@ -68,11 +68,11 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
 
   const album = findGalleryAlbum(match);
 
-    // Fetch Comment
-    const commentRecord = await db.prepare("SELECT comment FROM match_comments WHERE match_id = ?").get(match.id) as { comment: string } | undefined;
+    // Fetch Comment & Cover
+    const commentRecord = await db.prepare("SELECT comment, cover_image FROM match_comments WHERE match_id = ?").get(match.id) as { comment: string, cover_image?: string } | undefined;
 
-  // Background Image (Random or based on status)
-  const bgImage = isPlayed ? "/assets/DSC08466.webp" : "/assets/DSC08437.webp";
+  // Background Image (Priority: Custom Cover -> Default based on status)
+  const bgImage = commentRecord?.cover_image || (isPlayed ? "/assets/DSC08466.webp" : "/assets/DSC08437.webp");
 
 
 
@@ -191,9 +191,7 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
 
         {/* CONTENT */}
         <div className="relative z-10 container mx-auto px-6 text-center animate-fade-in-up">
-            <Link href="/" className="absolute top-8 left-6 md:left-0 flex items-center gap-2 text-gray-400 hover:text-white transition-colors uppercase font-bold text-xs tracking-widest">
-                <ArrowLeft className="w-4 h-4" /> Torna alla Home
-            </Link>
+
 
             <div className="mb-6 flex flex-col items-center gap-2">
                  <span className="bg-flyer-red text-white text-xs font-bold px-3 py-1 uppercase tracking-widest shadow-lg transform -skew-x-12">
@@ -239,6 +237,12 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
             <div className="mt-8 flex items-center justify-center gap-2 text-gray-300">
                 <MapPin className="w-5 h-5 text-flyer-red" />
                 <span className="font-bold uppercase tracking-wider">{match.location}</span>
+            </div>
+
+            <div className="mt-8 flex justify-center">
+                 <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors uppercase font-bold text-xs tracking-widest bg-black/30 px-4 py-2 rounded-full border border-white/10 hover:bg-black/50 hover:border-white/30 backdrop-blur-sm">
+                    <ArrowLeft className="w-4 h-4" /> Torna alla Home
+                </Link>
             </div>
         </div>
       </div>

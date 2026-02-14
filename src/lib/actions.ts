@@ -34,13 +34,14 @@ export async function authenticate(
 
 export async function saveMatchComment(prevState: any, formData: FormData) {
     console.log('\n========== SAVE MATCH COMMENT START ==========');
-    
+
     const matchId = formData.get("match_id") as string;
     const comment = formData.get("comment") as string;
+    const coverImage = formData.get("cover_image") as string;
 
     console.log(`[saveMatchComment] Match ID: "${matchId}"`);
-    console.log(`[saveMatchComment] Comment: "${comment}"`);
     console.log(`[saveMatchComment] Comment length: ${comment?.length || 0}`);
+    console.log(`[saveMatchComment] Cover Image: "${coverImage || 'N/A'}"`);
 
     if (!matchId) {
         console.error('❌ [saveMatchComment] Missing Match ID!');
@@ -50,18 +51,24 @@ export async function saveMatchComment(prevState: any, formData: FormData) {
     try {
         console.log('[saveMatchComment] Preparing SQL statement...');
         // MySQL upsert equivalent (requires match_id to be PRIMARY KEY)
+        // cover_image is optional, convert empty string to null
+        const coverImageVal = coverImage && coverImage.trim() !== "" ? coverImage.trim() : null;
+
         const stmt = db.prepare(`
-            INSERT INTO match_comments (match_id, comment, updated_at)
-            VALUES (?, ?, CURRENT_TIMESTAMP)
-            ON DUPLICATE KEY UPDATE comment = VALUES(comment), updated_at = CURRENT_TIMESTAMP
+            INSERT INTO match_comments (match_id, comment, cover_image, updated_at)
+            VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+            ON DUPLICATE KEY UPDATE 
+                comment = VALUES(comment), 
+                cover_image = VALUES(cover_image),
+                updated_at = CURRENT_TIMESTAMP
         `);
-        
+
         console.log('[saveMatchComment] Executing INSERT/UPDATE...');
-        const result = await stmt.run(matchId, comment);
-        
+        const result = await stmt.run(matchId, comment, coverImageVal);
+
         console.log('[saveMatchComment] ✅ SUCCESS - Database operation completed');
         console.log('[saveMatchComment] Result:', result);
-        
+
     } catch (e) {
         console.error("❌ [saveMatchComment] EXCEPTION:", e);
         console.error('[saveMatchComment] Error details:', {
@@ -75,7 +82,7 @@ export async function saveMatchComment(prevState: any, formData: FormData) {
     revalidatePath("/");
     revalidatePath("/matches");
     revalidatePath("/admin/matches");
-    
+
     console.log('========== SAVE MATCH COMMENT END ✅ ==========\n');
     return { message: "Comment saved successfully!" };
 }

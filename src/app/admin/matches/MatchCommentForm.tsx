@@ -8,9 +8,10 @@ import { clsx } from "clsx";
 interface MatchCommentFormProps {
     matchId: string;
     initialComment: string;
+    initialCoverImage?: string | null;
 }
 
-export default function MatchCommentForm({ matchId, initialComment }: MatchCommentFormProps) {
+export default function MatchCommentForm({ matchId, initialComment, initialCoverImage }: MatchCommentFormProps) {
     const [state, formAction, isPending] = useActionState(saveMatchComment, null);
 
     const handleFormAction = (formData: FormData) => {
@@ -22,8 +23,22 @@ export default function MatchCommentForm({ matchId, initialComment }: MatchComme
     };
 
     return (
-        <form action={handleFormAction} className="mt-4">
+        <form action={handleFormAction} className="mt-4 space-y-4">
             <input type="hidden" name="match_id" value={matchId} />
+            
+            {/* Cover Image URL Input */}
+            <div>
+                <label className="block text-xs uppercase font-bold text-gray-400 mb-1">Cover Image URL (Opzionale)</label>
+                <input 
+                    type="text" 
+                    name="cover_image" 
+                    defaultValue={initialCoverImage || ""}
+                    placeholder="https://example.com/image.jpg"
+                    className="w-full bg-black/30 border border-white/10 rounded p-2 text-white text-sm focus:outline-none focus:border-flyer-cyan transition-colors"
+                />
+                <p className="text-[10px] text-gray-500 mt-1">Lascia vuoto per usare l'immagine di default.</p>
+            </div>
+
             <div className="relative">
                 <textarea
                     name="comment"

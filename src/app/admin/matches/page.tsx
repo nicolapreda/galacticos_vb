@@ -10,15 +10,17 @@ export default async function AdminMatchesPage() {
     const playedMatches = matches.filter(m => m.played).reverse(); // Show most recent first
 
     // Fetch Comments
-    const comments = await db.prepare("SELECT * FROM match_comments").all() as { match_id: string, comment: string }[];
-    const commentsMap = new Map(comments.map(c => [c.match_id, c.comment]));
+    const comments = await db.prepare("SELECT * FROM match_comments").all() as { match_id: string, comment: string, cover_image?: string }[];
+    const commentsMap = new Map(comments.map(c => [c.match_id, c]));
 
     return (
         <div className="max-w-4xl mx-auto animate-fade-in-up">
-            <h1 className="text-3xl font-black font-anton uppercase text-white mb-8">Gestione Commenti Match</h1>
+            <h1 className="text-3xl font-black font-anton uppercase text-white mb-8">Gestione Commenti & Cover Match</h1>
 
             <div className="space-y-6">
-                {playedMatches.map((match) => (
+                {playedMatches.map((match) => {
+                    const commentData = commentsMap.get(match.id);
+                    return (
                     <div key={match.id} className="bg-white/5 border border-white/10 rounded-lg p-6">
                         <div className="flex justify-between items-start mb-4">
                             <div>
@@ -36,10 +38,11 @@ export default async function AdminMatchesPage() {
 
                         <MatchCommentForm 
                             matchId={match.id} 
-                            initialComment={commentsMap.get(match.id) || ""} 
+                            initialComment={commentData?.comment || ""} 
+                            initialCoverImage={commentData?.cover_image || null}
                         />
                     </div>
-                ))}
+                )})}
 
                 {playedMatches.length === 0 && (
                     <p className="text-gray-400 text-center py-12">Nessuna partita giocata trovata.</p>

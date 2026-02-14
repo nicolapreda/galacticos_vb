@@ -95,7 +95,7 @@ export default async function Home() {
       {/* 
         STANDINGS SECTION (MOVED UP)
       */}
-      <section className="relative z-20 py-24 bg-gradient-to-b from-[#001E45] to-black border-t border-white/5">
+      <section className="relative z-20 py-24 bg-gradient-to-b from-[#001E45] to-black">
          <div className="container mx-auto px-6 max-w-5xl">
              <div className="flex items-end justify-between mb-8">
                   <h2 className="text-6xl md:text-8xl font-black font-anton uppercase text-white leading-none tracking-wide">

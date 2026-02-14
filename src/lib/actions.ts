@@ -29,133 +29,53 @@ export async function authenticate(
     }
 }
 
-// --- NEWS MANAGEMENT ---
-
-export async function createNews(prevState: any, formData: FormData) {
-    const title = formData.get("title") as string;
-    const date = formData.get("date") as string;
-    const category = formData.get("category") as string;
-    const content = formData.get("content") as string;
-    const imageFile = formData.get("image") as File;
-
-    let imagePath = "";
-
-    // Handle Image Upload
-    if (imageFile && imageFile.size > 0) {
-        const buffer = Buffer.from(await imageFile.arrayBuffer());
-        const filename = Date.now() + "_" + imageFile.name.replaceAll(" ", "_");
-        const uploadDir = path.join(process.cwd(), "public/uploads");
-
-        try {
-            await writeFile(path.join(uploadDir, filename), buffer);
-            imagePath = `/uploads/${filename}`;
-        } catch (e) {
-            console.error("Upload failed", e);
-            return { message: "Failed to upload image" };
-        }
-    }
-
-    try {
-        const stmt = db.prepare(`
-            INSERT INTO news (title, date, content, image)
-            VALUES (?, ?, ?, ?)
-        `);
-        await stmt.run(title, date, content, imagePath);
-    } catch (e) {
-        return { message: "Database Error: Failed to create news." };
-    }
-
-    revalidatePath("/news");
-    revalidatePath("/admin/news");
-    revalidatePath("/");
-    redirect("/admin/news");
-}
-
-export async function deleteNews(id: number) {
-    try {
-        const stmt = db.prepare("DELETE FROM news WHERE id = ?");
-        await stmt.run(id);
-        revalidatePath("/news");
-        revalidatePath("/admin/news");
-        revalidatePath("/");
-    } catch (error) {
-        console.error("Database Error: Failed to delete news.", error);
-        throw new Error("Failed to delete news");
-    }
-}
-
-export async function updateNews(id: number, prevState: any, formData: FormData) {
-    const title = formData.get("title") as string;
-    const date = formData.get("date") as string;
-    const category = formData.get("category") as string;
-    const content = formData.get("content") as string;
-    const imageFile = formData.get("image") as File;
-
-    let imagePath = null;
-
-    // Handle Image Upload if new image provided
-    if (imageFile && imageFile.size > 0) {
-        const buffer = Buffer.from(await imageFile.arrayBuffer());
-        const filename = Date.now() + "_" + imageFile.name.replaceAll(" ", "_");
-        const uploadDir = path.join(process.cwd(), "public/uploads");
-
-        try {
-            await writeFile(path.join(uploadDir, filename), buffer);
-            imagePath = `/uploads/${filename}`;
-        } catch (e) {
-            console.error("Upload failed", e);
-            return { message: "Failed to upload image" };
-        }
-    }
-
-    try {
-        if (imagePath) {
-            const stmt = db.prepare(`
-                UPDATE news 
-                SET title = ?, date = ?, category = ?, content = ?, image = ?
-                WHERE id = ?
-            `);
-            await stmt.run(title, date, category, content, imagePath, id);
-        } else {
-            const stmt = db.prepare(`
-                UPDATE news 
-                SET title = ?, date = ?, category = ?, content = ?
-                WHERE id = ?
-            `);
-            await stmt.run(title, date, category, content, id);
-        }
-    } catch (e) {
-        return { message: "Database Error: Failed to update news." };
-    }
-
-    revalidatePath("/admin/news");
-    revalidatePath("/");
-    redirect("/admin/news");
-}
-
 // --- MATCH COMMENTS ---
 
+
 export async function saveMatchComment(prevState: any, formData: FormData) {
+    console.log('\n========== SAVE MATCH COMMENT START ==========');
+    
     const matchId = formData.get("match_id") as string;
     const comment = formData.get("comment") as string;
 
-    if (!matchId) return { message: "Invalid Match ID" };
+    console.log(`[saveMatchComment] Match ID: "${matchId}"`);
+    console.log(`[saveMatchComment] Comment: "${comment}"`);
+    console.log(`[saveMatchComment] Comment length: ${comment?.length || 0}`);
+
+    if (!matchId) {
+        console.error('❌ [saveMatchComment] Missing Match ID!');
+        return { message: "Invalid Match ID" };
+    }
 
     try {
+        console.log('[saveMatchComment] Preparing SQL statement...');
         // MySQL upsert equivalent (requires match_id to be PRIMARY KEY)
         const stmt = db.prepare(`
             INSERT INTO match_comments (match_id, comment, updated_at)
             VALUES (?, ?, CURRENT_TIMESTAMP)
             ON DUPLICATE KEY UPDATE comment = VALUES(comment), updated_at = CURRENT_TIMESTAMP
         `);
-        await stmt.run(matchId, comment);
+        
+        console.log('[saveMatchComment] Executing INSERT/UPDATE...');
+        const result = await stmt.run(matchId, comment);
+        
+        console.log('[saveMatchComment] ✅ SUCCESS - Database operation completed');
+        console.log('[saveMatchComment] Result:', result);
+        
     } catch (e) {
-        console.error("Failed to save match comment", e);
+        console.error("❌ [saveMatchComment] EXCEPTION:", e);
+        console.error('[saveMatchComment] Error details:', {
+            message: (e as Error).message,
+            stack: (e as Error).stack
+        });
         return { message: "Database Error: Failed to save comment." };
     }
 
+    console.log('[saveMatchComment] Revalidating paths...');
     revalidatePath("/");
     revalidatePath("/matches");
     revalidatePath("/admin/matches");
+    
+    console.log('========== SAVE MATCH COMMENT END ✅ ==========\n');
     return { message: "Comment saved successfully!" };
 }

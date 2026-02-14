@@ -186,10 +186,17 @@ async function processFolder(page, folder, retryCount = 0) {
 
 async function main() {
     console.log('🚀 Starting Robust Gallery Sync...');
+    console.log(`📁 JSON config file: ${JSON_PATH}`);
     
     let folders = [];
     if (fs.existsSync(JSON_PATH)) {
-        folders = JSON.parse(fs.readFileSync(JSON_PATH, 'utf8'));
+        const content = fs.readFileSync(JSON_PATH, 'utf8');
+        folders = JSON.parse(content);
+        console.log(`✅ Loaded ${folders.length} folders from config`);
+        console.log(`   Folders: ${folders.map(f => f.name).join(', ')}`);
+    } else {
+        console.warn(`⚠️ No gallery-folders.json found at ${JSON_PATH}`);
+        console.log('   Please create it or run the update schema script first.');
     }
 
     const browserOptions = {

@@ -1,4 +1,3 @@
-version: "3.8"
 
 services:
   nextjs:
@@ -14,6 +13,12 @@ services:
     environment:
       - AUTH_TRUST_HOST=true
       - AUTH_URL=https://galacticosvb.it
+      # Gallery sync options
+      - ENABLE_GALLERY_SYNC_CRON=true
+      - DETECT_GALLERY_FOLDERS_ON_STARTUP=false
+      - SYNC_GALLERY_ON_STARTUP=false
+      # Puppeteer config
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
     networks:
       - nginx
 

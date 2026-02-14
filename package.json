@@ -10,7 +10,9 @@
     "build": "next build",
     "start": "next start -p 3003",
     "lint": "eslint",
-    "sync-gallery": "node scripts/sync-gallery.js"
+    "sync-gallery": "node scripts/sync-gallery.js",
+    "sync-gallery-cron": "node scripts/sync-gallery-cron.js",
+    "detect-gallery-folders": "node scripts/detect-gallery-folders.js"
   },
   "dependencies": {
     "@stripe/stripe-js": "^8.7.0",
@@ -22,6 +24,7 @@
     "lucide-react": "^0.563.0",
     "next": "16.1.5",
     "next-auth": "^5.0.0-beta.30",
+    "node-cron": "^3.0.2",
     "puppeteer": "^24.36.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",

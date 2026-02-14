@@ -25,46 +25,68 @@ export const db = {
     prepare(sql: string) {
         return {
             all: async (...params: any[]) => {
-                const [rows] = await pool.execute(sql, params);
-                return rows;
+                try {
+                    console.log(`[DB.all] SQL: ${sql.substring(0, 100)}...`);
+                    console.log(`[DB.all] Params:`, params);
+                    const [rows] = await pool.execute(sql, params);
+                    console.log(`[DB.all] Result: ${(rows as any[]).length} rows returned`);
+                    return rows;
+                } catch (err) {
+                    console.error('❌ [DB.all] QUERY FAILED:', String(err));
+                    console.error('[DB.all] SQL:', sql);
+                    console.error('[DB.all] Params:', params);
+                    return [];
+                }
             },
             get: async (...params: any[]) => {
-                const [rows] = await pool.execute(sql, params);
-                const arr = rows as any[];
-                return arr[0];
+                try {
+                    console.log(`[DB.get] SQL: ${sql.substring(0, 100)}...`);
+                    console.log(`[DB.get] Params:`, params);
+                    const [rows] = await pool.execute(sql, params);
+                    const arr = rows as any[];
+                    console.log(`[DB.get] Result: ${arr.length > 0 ? 'found' : 'not found'}`);
+                    return arr[0];
+                } catch (err) {
+                    console.error('❌ [DB.get] QUERY FAILED:', String(err));
+                    console.error('[DB.get] SQL:', sql);
+                    console.error('[DB.get] Params:', params);
+                    return undefined;
+                }
             },
             run: async (...params: any[]) => {
-                const [result] = await pool.execute(sql, params);
-                return result;
+                try {
+                    console.log(`[DB.run] SQL: ${sql.substring(0, 100)}...`);
+                    console.log(`[DB.run] Params:`, params);
+                    const [result] = await pool.execute(sql, params);
+                    console.log('[DB.run] Result:', result);
+                    return result;
+                } catch (err) {
+                    console.error('❌ [DB.run] QUERY FAILED:', String(err));
+                    console.error('[DB.run] SQL:', sql);
+                    console.error('[DB.run] Params:', params);
+                    return undefined;
+                }
             },
         };
     },
     async exec(sql: string) {
-        await pool.query(sql);
+        try {
+            await pool.query(sql);
+        } catch (err) {
+            console.warn('DB exec failed:', String(err));
+        }
     },
     // direct query helper
     async query(sql: string, params?: any[]) {
-        const [rows] = await pool.execute(sql, params || []);
-        return rows;
+        try {
+            const [rows] = await pool.execute(sql, params || []);
+            return rows;
+        } catch (err) {
+            console.warn('DB query failed:', String(err));
+            return [];
+        }
     },
 };
-
-export interface News {
-    id: number;
-    title: string;
-    content: string;
-    image: string | null;
-    date: string;
-}
-
-export interface Event {
-    id: number;
-    title: string;
-    description: string;
-    date: string;
-    location: string;
-    image: string | null;
-}
 
 export interface Product {
     id: number;

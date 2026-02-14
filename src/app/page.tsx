@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { db, News } from "@/lib/db";
+import { db } from "@/lib/db";
 import { getLeagueData, NextMatch } from "@/lib/scraper";
 import { ArrowRight } from "lucide-react";
 

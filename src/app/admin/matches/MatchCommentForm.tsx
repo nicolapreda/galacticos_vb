@@ -13,8 +13,16 @@ interface MatchCommentFormProps {
 export default function MatchCommentForm({ matchId, initialComment }: MatchCommentFormProps) {
     const [state, formAction, isPending] = useActionState(saveMatchComment, null);
 
+    const handleFormAction = (formData: FormData) => {
+        console.log('[MatchCommentForm] Form submitted!');
+        console.log('[MatchCommentForm] Match ID:', formData.get('match_id'));
+        console.log('[MatchCommentForm] Comment:', formData.get('comment'));
+        console.log('[MatchCommentForm] Calling server action...');
+        formAction(formData);
+    };
+
     return (
-        <form action={formAction} className="mt-4">
+        <form action={handleFormAction} className="mt-4">
             <input type="hidden" name="match_id" value={matchId} />
             <div className="relative">
                 <textarea

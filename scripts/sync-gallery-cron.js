@@ -32,20 +32,19 @@ function log(message) {
     }
 }
 
-function runSync() {
-    log('📸 Starting gallery sync...');
+function runCommand(command, description) {
+    log(`🚀 Starting ${description}...`);
     
     return new Promise((resolve) => {
-        const syncProcess = spawn('npm', ['run', 'sync-gallery'], {
+        const proc = spawn(command, [], {
             cwd: path.join(__dirname, '..'),
             stdio: 'pipe',
             shell: true
         });
 
         let output = '';
-        let errorOutput = '';
 
-        syncProcess.stdout.on('data', (data) => {
+        proc.stdout.on('data', (data) => {
             const message = data.toString().trim();
             if (message) {
                 log(`   ${message}`);
@@ -53,28 +52,45 @@ function runSync() {
             }
         });
 
-        syncProcess.stderr.on('data', (data) => {
+        proc.stderr.on('data', (data) => {
             const message = data.toString().trim();
             if (message) {
                 log(`   ❌ ${message}`);
-                errorOutput += message + '\n';
             }
         });
 
-        syncProcess.on('close', (code) => {
+        proc.on('close', (code) => {
             if (code === 0) {
-                log('✅ Gallery sync completed successfully!');
+                log(`✅ ${description} completed successfully!`);
             } else {
-                log(`❌ Gallery sync failed with exit code ${code}`);
+                log(`❌ ${description} failed with exit code ${code}`);
             }
             resolve(code);
         });
 
-        syncProcess.on('error', (err) => {
-            log(`❌ Failed to start sync process: ${err.message}`);
+        proc.on('error', (err) => {
+            log(`❌ Failed to start process: ${err.message}`);
             resolve(1);
         });
     });
+}
+
+async function runSync() {
+    log('📸 Starting full gallery update cycle...');
+    
+    // 1. Detect new folders
+    const detectCode = await runCommand('npm run detect-gallery-folders', 'Folder Detection');
+    
+    // 2. Sync images (always run, even if detection failed, to update existing folders)
+    // But ideally we want to proceed.
+    
+    log('⏱️ Waiting 5 seconds before syncing...');
+    await new Promise(r => setTimeout(r, 5000));
+
+    // 3. Sync images
+    const syncCode = await runCommand('npm run sync-gallery', 'Gallery Sync');
+    
+    return syncCode;
 }
 
 async function main() {

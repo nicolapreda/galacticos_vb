@@ -1,18 +1,21 @@
 # Gallery Sync Documentation
 
 ## Overview
-
-Il sistema di sincronismo della gallery automaticamente aggiorna le foto dal drive Nextcloud ogni ora.
-
-## Architettura
-
-### Scripts disponibili
-
-| Script | Comando | Descrizione |
-|--------|---------|------------|
-| `sync-gallery.js` | `npm run sync-gallery` | Sincronizza le immagini per tutte le cartelle in `gallery-folders.json` |
-| `detect-gallery-folders.js` | `npm run detect-gallery-folders` | Rileva automaticamente le nuove cartelle nel drive e le aggiunge a `gallery-folders.json` |
-| `sync-gallery-cron.js` | `npm run sync-gallery-cron` | Esegue il sync automaticamente ogni ora (minuto 0) |
+ 
+ Il sistema di sincronismo della gallery automaticamente aggiorna le foto dal drive Nextcloud ogni ora.
+ Il processo ora include due step:
+ 1. **Detection**: Rileva nuove cartelle aggiunte al drive.
+ 2. **Sync**: Scarica/aggiorna i link delle immagini per tutte le cartelle.
+ 
+ ## Architettura
+ 
+ ### Scripts disponibili
+ 
+ | Script | Comando | Descrizione |
+ |--------|---------|------------|
+ | `sync-gallery.js` | `npm run sync-gallery` | Sincronizza le immagini per tutte le cartelle in `gallery-folders.json` |
+ | `detect-gallery-folders.js` | `npm run detect-gallery-folders` | Rileva automaticamente le nuove cartelle nel drive e le aggiunge a `gallery-folders.json` |
+ | `sync-gallery-cron.js` | `npm run sync-gallery-cron` | Esegue **detect + sync** automaticamente ogni ora (minuto 0) |
 
 ## Uso Locale (senza Docker)
 

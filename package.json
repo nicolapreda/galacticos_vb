@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start -p 3003",
     "lint": "eslint",
-    "sync-gallery": "node scripts/sync-gallery.js",
+    "sync-gallery": "node scripts/detect-gallery-folders.js && node scripts/sync-gallery.js",
+    "sync-gallery-only": "node scripts/sync-gallery.js",
     "sync-gallery-cron": "node scripts/sync-gallery-cron.js",
     "detect-gallery-folders": "node scripts/detect-gallery-folders.js"
   },

@@ -32,11 +32,16 @@ function log(message) {
     }
 }
 
-function runCommand(command, description) {
-    log(`🚀 Starting ${description}...`);
+
+
+async function runSync() {
+    log('📸 Starting full gallery update cycle (Detect + Sync)...');
+    
+    // The 'sync-gallery' npm script now includes detection:
+    // "node scripts/detect-gallery-folders.js && node scripts/sync-gallery.js"
     
     return new Promise((resolve) => {
-        const proc = spawn(command, [], {
+        const proc = spawn('npm', ['run', 'sync-gallery'], {
             cwd: path.join(__dirname, '..'),
             stdio: 'pipe',
             shell: true
@@ -61,9 +66,9 @@ function runCommand(command, description) {
 
         proc.on('close', (code) => {
             if (code === 0) {
-                log(`✅ ${description} completed successfully!`);
+                log('✅ Gallery sync cycle completed successfully!');
             } else {
-                log(`❌ ${description} failed with exit code ${code}`);
+                log(`❌ Gallery sync cycle failed with exit code ${code}`);
             }
             resolve(code);
         });
@@ -73,24 +78,6 @@ function runCommand(command, description) {
             resolve(1);
         });
     });
-}
-
-async function runSync() {
-    log('📸 Starting full gallery update cycle...');
-    
-    // 1. Detect new folders
-    const detectCode = await runCommand('npm run detect-gallery-folders', 'Folder Detection');
-    
-    // 2. Sync images (always run, even if detection failed, to update existing folders)
-    // But ideally we want to proceed.
-    
-    log('⏱️ Waiting 5 seconds before syncing...');
-    await new Promise(r => setTimeout(r, 5000));
-
-    // 3. Sync images
-    const syncCode = await runCommand('npm run sync-gallery', 'Gallery Sync');
-    
-    return syncCode;
 }
 
 async function main() {

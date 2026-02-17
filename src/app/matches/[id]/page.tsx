@@ -239,7 +239,7 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
     <div className="min-h-screen bg-galacticos-dark text-white font-sans selection:bg-flyer-cyan selection:text-galacticos-dark pb-20">
       
       {/* HEADER / HERO */}
-      <div className="relative h-[60vh] min-h-[500px] w-full flex items-center justify-center overflow-hidden">
+      <div className="relative min-h-[60vh] h-auto w-full flex items-center justify-center overflow-hidden py-20">
         {/* BG */}
         <div className="absolute inset-0 z-0">
              <Image 

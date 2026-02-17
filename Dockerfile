@@ -37,34 +37,9 @@ COPY --from=build /app/src/data ./src/data
 RUN mkdir -p /app/logs
 
 # Create entrypoint script
-RUN echo '#!/bin/sh\n\
-set -e\n\
-echo "🚀 Starting Galacticos VB container..."\n\
-\n\
-# Optional: Detect new gallery folders on startup\n\
-if [ "$DETECT_GALLERY_FOLDERS_ON_STARTUP" = "true" ]; then\n\
-  echo "📁 Detecting gallery folders..."\n\
-  node scripts/detect-gallery-folders.js || true\n\
-fi\n\
-\n\
-# Optional: Sync gallery on startup\n\
-if [ "$SYNC_GALLERY_ON_STARTUP" = "true" ]; then\n\
-  echo "📸 Syncing gallery..."\n\
-  PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser node scripts/sync-gallery.js || true\n\
-fi\n\
-\n\
-# Start gallery sync cron job in background (if enabled)\n\
-if [ "$ENABLE_GALLERY_SYNC_CRON" = "true" ]; then\n\
-  echo "⏰ Starting gallery sync cron job..."\n\
-  PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser node scripts/sync-gallery-cron.js &\n\
-  CRON_PID=$!\n\
-  echo "✅ Cron job started (PID: $CRON_PID)"\n\
-fi\n\
-\n\
-# Start Next.js server\n\
-echo "🌐 Starting Next.js server..."\n\
-npm run start\n\
-' > /entrypoint.sh && chmod +x /entrypoint.sh
+# Copy entrypoint script
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 3003
 

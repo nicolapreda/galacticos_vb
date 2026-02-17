@@ -6,7 +6,7 @@ export default async function UsersPage() {
     // Fetch users (simple query)
     let users = [];
     try {
-        users = await db.prepare('SELECT id, email, name, created_at FROM users ORDER BY created_at DESC').all();
+        users = await db.prepare('SELECT id, email, name, created_at FROM users ORDER BY created_at DESC').all() as any;
     } catch (e) {
         console.error("Failed to fetch users:", e);
     }

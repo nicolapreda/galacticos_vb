@@ -3,9 +3,18 @@ import ShopClient from "@/components/ShopClient";
 import { getStripe } from "@/lib/stripe";
 import { revalidatePath } from "next/cache";
 
-async function getProducts(): Promise<Product[]> {
-    const stmnt = db.prepare("SELECT * FROM products");
-    return await stmnt.all() as Product[];
+async function getProducts(): Promise<Product[] | null> {
+    try {
+        const stmnt = db.prepare("SELECT * FROM products");
+        const rows = await stmnt.all() as any[];
+        return rows.map(p => ({
+            ...p,
+            price: Number(p.price)
+        }));
+    } catch (e) {
+        console.error("Failed to fetch products:", e);
+        return null; // Indicate error
+    }
 }
 
 async function verifyOrder(orderId: string) {

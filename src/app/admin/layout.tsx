@@ -1,5 +1,5 @@
 import { signOut } from "@/auth";
-import AdminSidebar from "@/components/AdminSidebar";
+import AdminNavbar from "@/components/AdminNavbar";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   async function handleSignOut() {
@@ -8,13 +8,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-galacticos-dark text-white flex">
+    <div className="min-h-screen bg-galacticos-dark text-white">
       
-      {/* SIDEBAR (Client Component) */}
-      <AdminSidebar signOutAction={handleSignOut} />
+      {/* NAVBAR (Client Component) */}
+      <AdminNavbar signOutAction={handleSignOut} />
 
       {/* MAIN CONTENT */}
-      <main className="flex-1 ml-0 md:ml-64 p-8 pt-20 md:pt-8 w-full overflow-x-hidden">
+      <main className="max-w-7xl mx-auto p-6 pt-28 w-full">
           {children}
       </main>
     </div>

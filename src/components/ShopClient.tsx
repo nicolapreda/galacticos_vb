@@ -7,7 +7,7 @@ import { Product } from "@/lib/db";
 import { ShoppingBag, CheckCircle } from "lucide-react"; // Added CheckCircle
 import { useCart } from "@/context/CartContext";
 
-export default function ShopClient({ products, success }: { products: Product[], success?: boolean }) {
+export default function ShopClient({ products, success }: { products: Product[] | null, success?: boolean }) {
   const { cart, setCartOpen, addToCart, clearCart } = useCart();
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -97,7 +97,18 @@ export default function ShopClient({ products, success }: { products: Product[],
       {/* Product Grid */}
       <main className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {products.map((product) => (
+          {products === null ? (
+             <div className="col-span-full text-center py-20 bg-red-900/20 border border-red-900/50 rounded p-8">
+                <h3 className="text-2xl font-bold text-red-500 mb-4 uppercase">Servizio non disponibile</h3>
+                <p className="text-gray-400">Impossibile caricare i prodotti al momento. Verifica la connessione al database.</p>
+             </div>
+          ) : products.length === 0 ? (
+             <div className="col-span-full text-center py-20">
+                <h3 className="text-2xl font-bold text-gray-400 mb-4">Nessun prodotto disponibile</h3>
+                <p className="text-gray-500">I nuovi drop arriveranno presto, o vai nel pannello admin per aggiungerli!</p>
+             </div>
+          ) : (
+            products.map((product) => (
             <Link
               href={`/shop/${product.id}`}
               key={product.id}
@@ -154,15 +165,7 @@ export default function ShopClient({ products, success }: { products: Product[],
                 </button>
                 </div>
             </Link>
-          ))}
-
-          {/* Fallback if empty */}
-          {products.length === 0 && (
-             <div className="col-span-full text-center py-20">
-                <h3 className="text-2xl font-bold text-gray-400 mb-4">Nessun prodotto disponibile</h3>
-                <p className="text-gray-500">I nuovi drop arriveranno presto, o vai nel pannello admin per aggiungerli!</p>
-             </div>
-          )}
+          )))}
         </div>
       </main>
     </div>

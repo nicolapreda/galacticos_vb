@@ -21,6 +21,8 @@ services:
       - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
     networks:
       - nginx
+    volumes:
+      - ./src/data:/app/src/data
 
 networks:
   nginx:

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ArrowLeft, MapPin, Calendar, Clock, Trophy } from "lucide-react";
 import fs from 'fs';
 import path from 'path';
+import type { Metadata } from 'next';
 
 // Force dynamic rendering so scraper runs on every request
 export const dynamic = 'force-dynamic'; 
@@ -54,6 +55,63 @@ function findGalleryAlbum(match: CalendarMatch) {
     return album || null;
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const { matches } = await getLeagueData();
+  const match = matches.find((m) => m.id === id);
+
+  if (!match) {
+    return {
+      title: "Match Non Trovato - Galacticos Vele Blu",
+    };
+  }
+
+  const isPlayed = match.played;
+  const album = findGalleryAlbum(match);
+  
+  // Fetch Comment & Cover for Metadata
+  const commentRecord = await db.prepare("SELECT comment, cover_image FROM match_comments WHERE match_id = ?").get(match.id) as { comment: string, cover_image?: string } | undefined;
+  
+  // Resolve Cover Image
+  // Priority: 1. Manual Cover -> 2. Album Cover -> 3. First Album Image -> 4. Default
+  let coverImage = commentRecord?.cover_image;
+  if (!coverImage && album) {
+      coverImage = album.cover || (album.images && album.images.length > 0 ? album.images[0] : undefined);
+  }
+  if (!coverImage) {
+      coverImage = isPlayed ? "https://galacticosvb.it/assets/DSC08466.webp" : "https://galacticosvb.it/assets/DSC08437.webp";
+  }
+
+  // Ensure absolute URL for OG Image
+  if (coverImage.startsWith("/")) {
+      coverImage = `https://galacticosvb.it${coverImage}`;
+  }
+
+  const title = isPlayed 
+    ? `${match.isHome ? "Galacticos VB" : match.opponent} ${match.result} ${!match.isHome ? "Galacticos VB" : match.opponent}`
+    : `Galacticos VB vs ${match.opponent} - Pre-Match`;
+
+  const description = isPlayed
+    ? `Guarda il risultato, i marcatori e le foto della partita contro ${match.opponent}.`
+    : `Tutte le info, orario e luogo per la sfida contro ${match.opponent}. Forza Galacticos!`;
+
+  return {
+    title: `${title} | Galacticos Vele Blu`,
+    description: description,
+    openGraph: {
+      title: title,
+      description: description,
+      images: [coverImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: title,
+      description: description,
+      images: [coverImage],
+    },
+  };
+}
+
 export default async function MatchPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { matches } = await getLeagueData();
@@ -71,14 +129,19 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
     // Fetch Comment & Cover
     const commentRecord = await db.prepare("SELECT comment, cover_image FROM match_comments WHERE match_id = ?").get(match.id) as { comment: string, cover_image?: string } | undefined;
 
-  // Background Image (Priority: Custom Cover -> Default based on status)
-  const bgImage = commentRecord?.cover_image || (isPlayed ? "/assets/DSC08466.webp" : "/assets/DSC08437.webp");
-
-
+  // Background Image (Priority: Custom Cover -> Album Cover -> Album First Image -> Default)
+  let bgImage = commentRecord?.cover_image;
+  if (!bgImage && album) {
+      bgImage = album.cover || (album.images && album.images.length > 0 ? album.images[0] : undefined);
+  }
+  if (!bgImage) {
+      bgImage = isPlayed ? "/assets/DSC08466.webp" : "/assets/DSC08437.webp";
+  }
 
   // Calculate Pre-Match Stats if not played
   let preMatchStats = null;
   if (!isPlayed && matches.length > 0) {
+      // ... (code omitted for brevity, logic remains same)
       const { standings, topScorers } = await getLeagueData();
       
       const galacticos = standings.find(t => t.team.toUpperCase().includes("GALACTICOS"));
@@ -239,8 +302,8 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
                 <span className="font-bold uppercase tracking-wider">{match.location}</span>
             </div>
 
-            <div className="mt-8 flex justify-center">
-                 <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors uppercase font-bold text-xs tracking-widest bg-black/30 px-4 py-2 rounded-full border border-white/10 hover:bg-black/50 hover:border-white/30 backdrop-blur-sm">
+            <div className="mt-8 flex justify-center pb-8">
+                 <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors uppercase font-bold text-xs tracking-widest bg-black/30 px-4 py-2 rounded-full border border-white/10 hover:bg-black/50 hover:border-white/30 backdrop-blur-sm shadow-lg mb-4">
                     <ArrowLeft className="w-4 h-4" /> Torna alla Home
                 </Link>
             </div>

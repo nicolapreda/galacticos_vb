@@ -10,6 +10,9 @@ export default async function ProductPage({ params }: { params: { id: string } }
     notFound();
   }
 
+  // Convert price to Number
+  product.price = Number(product.price);
+
   return (
       <ProductDetailClient product={product} />
   );

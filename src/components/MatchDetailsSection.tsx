@@ -350,8 +350,10 @@ export default function MatchDetailsSection({ url, isPlayed, albumName, albumCov
                         </div>
                      ) : (
                          /* Fallback to single cover link */
-                         <Link 
-                            href={`/gallery?dir=${encodeURIComponent(albumName)}`} 
+                         <a 
+                            href={`https://drive.predanicola.it/s/i4rkc43fwrMEKB5?dir=${encodeURIComponent("/" + albumName)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="group relative h-48 w-full block overflow-hidden rounded-lg border border-white/20"
                         >
                             <Image 
@@ -364,10 +366,10 @@ export default function MatchDetailsSection({ url, isPlayed, albumName, albumCov
                             <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                                 <div className="text-center transform group-hover:-translate-y-1 transition-transform">
                                     <span className="block text-4xl mb-2">📸</span>
-                                    <span className="font-black font-anton uppercase text-2xl text-white">Guarda le Foto</span>
+                                    <span className="font-black font-anton uppercase text-2xl text-white">Guarda le Foto su Drive</span>
                                 </div>
                             </div>
-                         </Link>
+                         </a>
                      )}
                  </div>
              )}

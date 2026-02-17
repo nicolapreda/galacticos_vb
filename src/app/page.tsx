@@ -186,38 +186,6 @@ export default async function Home() {
       {/* 
         SHOP SECTION 
       */}
-      <section className="relative z-30 min-h-[80vh] flex items-center border-t border-white/10 overflow-hidden group">
-          {/* Background Image with Parallax-like feel */}
-          <div className="absolute inset-0 z-0">
-               <Image 
-                   src="/assets/DSC08437.webp" 
-                   alt="Merch Background" 
-                   fill 
-                   className="object-cover transition-transform duration-[2s] group-hover:scale-105"
-                   priority
-               />
-               <div className="absolute inset-0 bg-gradient-to-r from-[#001E45] via-[#001E45]/80 to-transparent" />
-          </div>
-
-          <div className="container relative z-10 mx-auto px-6 max-w-7xl flex flex-col justify-center items-start h-full">
-               <div className="max-w-2xl animate-fade-in-up">
-                   <h2 className="text-7xl md:text-9xl font-black font-anton text-white leading-none uppercase mb-8 drop-shadow-2xl tracking-wide">
-                       Indossa <br/>
-                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-flyer-cyan to-flyer-blue">La Maglia</span>
-                   </h2>
-                   <p className="text-xl text-gray-200 font-bold mb-10 drop-shadow-md max-w-lg">
-                       Porta i colori dei Galacticos sempre con te. 
-                       Scopri la nuova collezione ufficiale.
-                   </p>
-                   
-                   <Link href="/shop" className="group bg-white text-galacticos-dark font-black uppercase px-10 py-5 text-xl hover:bg-flyer-cyan hover:text-white transition-all duration-300 inline-flex items-center gap-3 skew-x-[-10deg] shadow-2xl hover:shadow-flyer-cyan/50">
-                       <span className="skew-x-[10deg] inline-block">Vai allo Shop</span>
-                       <ArrowRight className="w-6 h-6 transform group-hover:translate-x-1 transition-transform skew-x-[10deg]" />
-                   </Link>
-               </div>
-          </div>
-      </section>
-
       {/* 
         LATEST MATCHES SECTION (REPLACED NEWS)
       */}
@@ -285,6 +253,38 @@ export default async function Home() {
                       </div>
                   )}
               </div>
+          </div>
+      </section>
+
+      <section className="relative z-30 min-h-[80vh] flex items-center border-t border-white/10 overflow-hidden group">
+          {/* Background Image with Parallax-like feel */}
+          <div className="absolute inset-0 z-0">
+               <Image 
+                   src="/assets/DSC08437.webp" 
+                   alt="Merch Background" 
+                   fill 
+                   className="object-cover transition-transform duration-[2s] group-hover:scale-105"
+                   priority
+               />
+               <div className="absolute inset-0 bg-gradient-to-r from-[#001E45] via-[#001E45]/80 to-transparent" />
+          </div>
+
+          <div className="container relative z-10 mx-auto px-6 max-w-7xl flex flex-col justify-center items-start h-full">
+               <div className="max-w-2xl animate-fade-in-up">
+                   <h2 className="text-7xl md:text-9xl font-black font-anton text-white leading-none uppercase mb-8 drop-shadow-2xl tracking-wide">
+                       Indossa <br/>
+                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-flyer-cyan to-flyer-blue">La Maglia</span>
+                   </h2>
+                   <p className="text-xl text-gray-200 font-bold mb-10 drop-shadow-md max-w-lg">
+                       Porta i colori dei Galacticos sempre con te. 
+                       Scopri la nuova collezione ufficiale.
+                   </p>
+                   
+                   <Link href="/shop" className="group bg-white text-galacticos-dark font-black uppercase px-10 py-5 text-xl hover:bg-flyer-cyan hover:text-white transition-all duration-300 inline-flex items-center gap-3 skew-x-[-10deg] shadow-2xl hover:shadow-flyer-cyan/50">
+                       <span className="skew-x-[10deg] inline-block">Vai allo Shop</span>
+                       <ArrowRight className="w-6 h-6 transform group-hover:translate-x-1 transition-transform skew-x-[10deg]" />
+                   </Link>
+               </div>
           </div>
       </section>
       

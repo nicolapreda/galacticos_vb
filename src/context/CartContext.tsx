@@ -31,7 +31,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const savedCart = localStorage.getItem("galacticos-cart");
     if (savedCart) {
       try {
-        setCart(JSON.parse(savedCart));
+        const parsed = JSON.parse(savedCart);
+        if (Array.isArray(parsed)) {
+            const sanitized = parsed.map((item: any) => ({
+                ...item,
+                price: Number(item.price) || 0
+            }));
+            setCart(sanitized);
+        }
       } catch (e) {
         console.error("Failed to parse cart", e);
       }

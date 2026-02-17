@@ -14,8 +14,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Galacticos Vele Blu - Official Website",
-  description: "Sito ufficiale dei Galacticos Vele Blu",
+  title: {
+    template: "%s | Galacticos Vele Blu",
+    default: "Galacticos Vele Blu - Squadra di Calcio a 7",
+  },
+  description: "Sito ufficiale dei Galacticos Vele Blu. Risultati, calendario, shop e news della squadra di calcio a 7 più seguita della provincia.",
+  keywords: ["Galacticos", "Vele Blu", "Calcio a 7", "Brescia", "CSI", "Sport"],
   metadataBase: new URL("https://galacticosvb.it"),
   icons: {
     icon: "/assets/logo.webp",
@@ -24,7 +28,7 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://galacticosvb.it/",
     title: "Galacticos Vele Blu - Official Website",
-    description: "Sito ufficiale dei Galacticos Vele Blu",
+    description: "Sito ufficiale dei Galacticos Vele Blu. Risultati, calendario, shop e news.",
     images: [
       {
         url: "/assets/thumbnail.jpg",
@@ -37,7 +41,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Galacticos Vele Blu - Official Website",
-    description: "Sito ufficiale dei Galacticos Vele Blu",
+    description: "Sito ufficiale dei Galacticos Vele Blu. Risultati, calendario, shop e news.",
     images: ["/assets/thumbnail.jpg"],
   },
 };

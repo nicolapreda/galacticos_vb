@@ -16,7 +16,7 @@ export const authConfig = {
                 // Redirect authenticated users away from login page?
                 // Maybe not necessary if we link to /admin directly
                 if (nextUrl.pathname.startsWith('/login')) {
-                    return Response.redirect(new URL('/admin', nextUrl));
+                    return Response.redirect(new URL('/admin/matches', nextUrl));
                 }
             }
             return true;

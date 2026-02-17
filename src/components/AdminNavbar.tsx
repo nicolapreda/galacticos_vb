@@ -15,6 +15,7 @@ export default function AdminNavbar({ signOutAction }: { signOutAction: () => Pr
     { href: "/admin/matches", label: "Match Comments", icon: FileText },
     { href: "/admin/shop", label: "Shop Drops", icon: ShoppingBag },
     { href: "/admin/orders", label: "Orders", icon: FileText },
+    { href: "/admin/users", label: "Users", icon: FileText },
   ];
 
   return (

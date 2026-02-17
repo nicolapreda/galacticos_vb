@@ -28,6 +28,13 @@ export default function Navbar() {
     { href: "/shop", label: "SHOP" },
   ];
 
+  // Check if we are on an admin page
+  const isAdminPage = pathname?.startsWith("/admin");
+
+  if (isAdminPage) {
+      return null;
+  }
+
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-galacticos-dark text-white border-b border-white/10">

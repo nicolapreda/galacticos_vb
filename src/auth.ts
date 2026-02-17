@@ -2,10 +2,16 @@ import NextAuth from 'next-auth';
 import { authConfig } from './auth.config';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
+import { db } from '@/lib/db';
+import bcrypt from 'bcrypt';
 
-// Default admin creds for simplicity - in production use ENV vars
-const ADMIN_USER = process.env.ADMIN_USER || "admin";
-const ADMIN_PASS = process.env.ADMIN_PASS || process.env.ADMIN_PASSWORD || "admin123";
+// User interface matching DB schema
+interface User {
+    id: number;
+    email: string;
+    password: string;
+    name: string;
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     ...authConfig,
@@ -19,11 +25,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 if (parsedCredentials.success) {
                     const { email, password } = parsedCredentials.data;
 
-                    if (email === ADMIN_USER && password === ADMIN_PASS) {
+                    // Fetch user from DB
+                    // Using `any` cast because our simple db wrapper returns generic types
+                    const user = await db.prepare('SELECT * FROM users WHERE email = ?').get(email) as User | undefined;
+
+                    if (!user) return null;
+
+                    const passwordsMatch = await bcrypt.compare(password, user.password);
+
+                    if (passwordsMatch) {
                         return {
-                            id: "1",
-                            name: "Admin",
-                            email: ADMIN_USER,
+                            id: String(user.id),
+                            name: user.name,
+                            email: user.email,
                         };
                     }
                 }

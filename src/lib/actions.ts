@@ -15,7 +15,7 @@ export async function authenticate(
 ) {
     try {
         const data = Object.fromEntries(formData);
-        await signIn("credentials", { ...data, redirectTo: "/admin" });
+        await signIn("credentials", { ...data, redirectTo: "/admin/matches" });
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {
@@ -85,4 +85,42 @@ export async function saveMatchComment(prevState: any, formData: FormData) {
 
     console.log('========== SAVE MATCH COMMENT END ✅ ==========\n');
     return { message: "Comment saved successfully!" };
+}
+
+// --- USER MANAGEMENT ---
+
+export async function createUser(prevState: any, formData: FormData) {
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const name = formData.get("name") as string;
+
+    if (!email || !password) {
+        return { message: "Email and Password are required." };
+    }
+
+    try {
+        const bcrypt = require('bcrypt');
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        await db.prepare('INSERT INTO users (email, password, name) VALUES (?, ?, ?)').run(email, hashedPassword, name);
+
+        revalidatePath("/admin/users");
+        return { message: "User created successfully!" };
+    } catch (e) {
+        console.error("Failed to create user:", e);
+        return { message: "Failed to create user. Email might already exist." };
+    }
+}
+
+
+export async function deleteUser(id: number) {
+    try {
+        // Prevent deleting the last admin or yourself if needed, but for now simple delete
+        await db.prepare('DELETE FROM users WHERE id = ?').run(id);
+        revalidatePath("/admin/users");
+        return { message: "User deleted successfully" };
+    } catch (e) {
+        console.error("Failed to delete user:", e);
+        return { message: "Failed to delete user" };
+    }
 }

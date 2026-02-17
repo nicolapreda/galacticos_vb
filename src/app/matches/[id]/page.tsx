@@ -248,6 +248,7 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
                 fill 
                 className="object-cover opacity-30" 
                 priority
+                unoptimized
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-galacticos-dark/80 to-galacticos-dark" />
         </div>

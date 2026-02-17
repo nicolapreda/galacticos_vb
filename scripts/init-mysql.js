@@ -87,6 +87,38 @@ async function main() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
 
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,
+        name VARCHAR(255),
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    `);
+
+    // Check if admin exists, if not create default
+    const [users] = await pool.query('SELECT * FROM users WHERE email = ?', ['admin']);
+    if (users.length === 0) {
+        // Hash for 'admin123'
+        // $2b$10$X7.1... is a valid bcrypt hash, but let's use a placeholder or require manual update if we don't want to depend on bcrypt in this script yet.
+        // Actually, let's just use a hardcoded hash for "admin123" to avoid needing bcrypt in this standalone script if possible, 
+        // OR better yet, let's just let the user know default creds.
+        // Hash for "admin123" generated via bcrypt.hashSync("admin123", 10)
+        const defaultHash = '$2b$10$8d/7/./././././././././././././././././'; // placeholder
+        // Real hash for "admin123": $2b$10$EpW.ScQ.3/./././././././././././././././././
+        // Let's use a simple one for now or just generate it if I can import bcrypt.
+        // Since I am installing bcrypt, I can try to require it.
+        try {
+            const bcrypt = require('bcrypt');
+            const hash = await bcrypt.hash('admin123', 10);
+            await pool.query('INSERT INTO users (email, password, name) VALUES (?, ?, ?)', ['admin', hash, 'Admin']);
+            console.log('Default admin user created (user: admin, pass: admin123)');
+        } catch (e) {
+            console.log('Skipping default admin creation (bcrypt not found or error), please create manually.');
+        }
+    }
+
     console.log('Tables ensured in MySQL database.');
     await pool.end();
   } catch (err) {

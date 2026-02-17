@@ -139,7 +139,7 @@ export default async function Home() {
                                         <td className="p-4">
                                             <span className={`
                                                 flex items-center justify-center w-8 h-8 rounded-full font-black
-                                                ${index < 3 ? "bg-flyer-cyan text-black" : "bg-white/10 text-gray-400"}
+                                                ${index < 2 ? "bg-flyer-cyan text-black" : (index >= standings.length - 4 ? "bg-red-600 text-white" : "bg-white/10 text-gray-400")}
                                             `}>
                                                 {team.rank}
                                             </span>

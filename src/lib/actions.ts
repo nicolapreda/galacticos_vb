@@ -89,7 +89,7 @@ export async function saveMatchComment(prevState: any, formData: FormData) {
 
 // --- USER MANAGEMENT ---
 
-export async function createUser(prevState: any, formData: FormData) {
+export async function createUser(formData: FormData) {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const name = formData.get("name") as string;

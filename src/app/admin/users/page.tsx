@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
-import { createUser, deleteUser } from "@/lib/actions";
+import { deleteUser } from "@/lib/actions";
+import CreateUserForm from "./CreateUserForm";
 import { revalidatePath } from "next/cache";
 
 export default async function UsersPage() {
@@ -24,42 +25,7 @@ export default async function UsersPage() {
                 </div>
 
                 {/* Create New User Form */}
-                <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-                    <h2 className="text-xl font-bold uppercase tracking-wider mb-4 flex items-center gap-2">
-                        <span className="w-2 h-8 bg-flyer-cyan block"></span>
-                        Nuovo Amministratore
-                    </h2>
-                    <form action={createUser} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <input 
-                            type="text" 
-                            name="name" 
-                            placeholder="Nome Completo" 
-                            className="bg-black/40 border border-white/10 rounded px-4 py-3 text-white focus:outline-none focus:border-flyer-cyan transition-colors"
-                            required
-                        />
-                        <input 
-                            type="email" 
-                            name="email" 
-                            placeholder="Email" 
-                            className="bg-black/40 border border-white/10 rounded px-4 py-3 text-white focus:outline-none focus:border-flyer-cyan transition-colors"
-                            required
-                        />
-                         <input 
-                            type="password" 
-                            name="password" 
-                            placeholder="Password" 
-                            className="bg-black/40 border border-white/10 rounded px-4 py-3 text-white focus:outline-none focus:border-flyer-cyan transition-colors"
-                            required
-                            minLength={6}
-                        />
-                        <button 
-                            type="submit" 
-                            className="bg-flyer-cyan text-galacticos-dark font-black uppercase tracking-widest py-3 rounded md:col-start-3 hover:bg-white transition-colors"
-                        >
-                            Crea Utente
-                        </button>
-                    </form>
-                </div>
+                <CreateUserForm />
 
                 {/* Users List */}
                 <div className="bg-white/5 border border-white/10 rounded-lg overflow-hidden">

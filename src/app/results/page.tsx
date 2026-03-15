@@ -83,22 +83,24 @@ export default async function ResultsPage() {
                                     {/* Teams & Score Grid */}
                                     <div className="flex-1 flex flex-col md:grid md:grid-cols-[1fr_auto_1fr] items-center gap-3 md:gap-8 w-full md:w-auto">
                                         
-                                        {/* Home Team (Always Align Right on desktop, center on mobile) */}
+                                        {/* Galacticos VB - Always Left */}
                                         <div className="text-center md:text-right w-full">
-                                            <span className={`block font-black text-base md:text-2xl uppercase ${match.isHome ? "text-flyer-cyan" : "text-white"} break-words`}>
-                                                {match.isHome ? "GALACTICOS VB" : match.opponent}
+                                            <span className="block font-black text-base md:text-2xl uppercase text-flyer-cyan break-words">
+                                                GALACTICOS VB
                                             </span>
                                         </div>
 
-                                        {/* Score Badge */}
+                                        {/* Score Badge - swapped for away matches so Galacticos score is always first */}
                                         <div className="bg-white/10 px-3 py-1 md:px-4 md:py-2 rounded text-xl md:text-2xl font-black font-anton text-white tracking-widest shadow-lg min-w-[80px] text-center">
-                                            {match.result}
+                                            {match.isHome
+                                                ? match.result
+                                                : match.result?.split("-").reverse().join("-")}
                                         </div>
 
-                                        {/* Away Team (Always Align Left on desktop, center on mobile) */}
+                                        {/* Opponent - Always Right */}
                                         <div className="text-center md:text-left w-full">
-                                            <span className={`block font-black text-base md:text-2xl uppercase ${!match.isHome ? "text-flyer-cyan" : "text-white"} break-words`}>
-                                                {!match.isHome ? "GALACTICOS VB" : match.opponent}
+                                            <span className="block font-black text-base md:text-2xl uppercase text-white break-words">
+                                                {match.opponent}
                                             </span>
                                         </div>
                                     </div>

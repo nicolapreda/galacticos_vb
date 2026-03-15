@@ -270,10 +270,10 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
 
             {/* SCOREBOARD */}
             <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
-                {/* TEAM 1 */}
-                <div className={`text-center flex-1 ${match.isHome ? "order-1" : "order-3"}`}>
-                    <h2 className="text-3xl md:text-5xl font-black font-anton uppercase text-white drop-shadow-xl">
-                        {match.isHome ? "GALACTICOS VB" : match.opponent}
+                {/* Left team: Galacticos if home, opponent if away */}
+                <div className="text-center flex-1 order-1">
+                    <h2 className={`text-3xl md:text-5xl font-black font-anton uppercase drop-shadow-xl ${match.isHome ? "text-white" : "text-white text-outline-white"}`}>
+                        {match.isHome ? "GALACTICOS VB" : match.opponent.toUpperCase()}
                     </h2>
                 </div>
 
@@ -290,10 +290,10 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
                     )}
                 </div>
 
-                {/* TEAM 2 */}
-                <div className={`text-center flex-1 ${match.isHome ? "order-3" : "order-1"}`}>
-                    <h2 className="text-3xl md:text-5xl font-black font-anton uppercase text-white drop-shadow-xl text-outline-white">
-                         {!match.isHome ? "GALACTICOS VB" : match.opponent}
+                {/* Right team: opponent if home, Galacticos if away */}
+                <div className="text-center flex-1 order-3">
+                    <h2 className={`text-3xl md:text-5xl font-black font-anton uppercase drop-shadow-xl ${match.isHome ? "text-white text-outline-white" : "text-white"}`}>
+                        {match.isHome ? match.opponent.toUpperCase() : "GALACTICOS VB"}
                     </h2>
                 </div>
             </div>
